@@ -1,7 +1,7 @@
 "use client";
 
 import { type Provider } from "@supabase/supabase-js";
-import { Icons } from "~/components/Icons";
+import { Icons } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import { supabase } from "~/server/supabase/supabaseClient";
 

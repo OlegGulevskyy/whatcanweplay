@@ -1,5 +1,5 @@
 import { type LucideProps } from "lucide-react";
-import { Icons } from "../Icons/Icons";
+import { Icons } from "~/components/icons";
 import { cn } from "~/utils/cn";
 
 export const Spinner = ({ className, ...props }: LucideProps) => (

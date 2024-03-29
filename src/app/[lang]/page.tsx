@@ -2,6 +2,8 @@ import { Trans } from "react-i18next/TransWithoutContext";
 import { useTranslation } from "../i18n";
 import { getLanguage } from "../i18n/utils/get-language";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
+import { PLAY_ROUTE_PATH } from "~/constants/navigation";
 
 export const metadata = {
   title: "What Can We Play",
@@ -41,20 +43,23 @@ export default async function Home({ params }: PageProps) {
           </Trans>
         </div>
       ))}
-      <button
-        type="button"
-        className="inline-flex w-full items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-lg font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      >
-        Grab your game now!
-        <ArrowRightIcon className="-mr-0.5 h-6 w-6" aria-hidden="true" />
-      </button>
+      <Link href={PLAY_ROUTE_PATH}>
+        <button
+          type="button"
+          className="inline-flex w-full items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-lg font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Grab your game now!
+          <ArrowRightIcon className="-mr-0.5 h-6 w-6" aria-hidden="true" />
+        </button>
+      </Link>
       <div className="mt-8 italic">
         <p>
-          As a new user, you can <b className="text-indigo-600">grab up to 3 games</b> for free!
+          As a new user, you can{" "}
+          <b className="text-indigo-600">grab up to 3 games</b> for free!
         </p>
         <p>
-          You keep them <b className="text-indigo-600">forever</b>, and if you forget the rules - we got you
-          covered!
+          You keep them <b className="text-indigo-600">forever</b>, and if you
+          forget the rules - we got you covered!
         </p>
       </div>
     </div>
