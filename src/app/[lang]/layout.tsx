@@ -9,7 +9,6 @@ import { Toaster } from "~/components/ui/toaster";
 import { getServerUser } from "~/utils/auth";
 import { AuthProvider } from "~/providers/AuthProvider/AuthProvider";
 import { TRPCReactProvider } from "~/trpc/react";
-import { MainLayout } from "~/layouts/main";
 import { languages } from "~/app/i18n/settings";
 
 import "~/styles/globals.css";
@@ -50,7 +49,7 @@ async function RootLayout({
           <TRPCReactProvider headers={headers()}>
             <AuthProvider {...user}>
               <Providers>
-                <MainLayout>{children}</MainLayout>
+                {children}
                 <Toaster />
               </Providers>
             </AuthProvider>

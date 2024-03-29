@@ -24,8 +24,6 @@ const FormSchema = z.object({
   fullName: z.string().min(2, {
     message: "Full name must be at least 2 characters.",
   }),
-
-  picture: z.string(),
 });
 
 export function ProfileSettingsView() {
@@ -37,7 +35,6 @@ export function ProfileSettingsView() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       fullName: data?.fullName ?? "",
-      picture: data?.avatarUrl ?? "",
     },
   });
 
@@ -63,32 +60,13 @@ export function ProfileSettingsView() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full space-y-6 p-4"
       >
-        <FormField
-          control={form.control}
-          name="picture"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <div className="flex flex-row items-center gap-4">
-                  <Image
-                    src={field.value}
-                    alt="Profile picture"
-                    width={400}
-                    height={400}
-                    className="h-24 w-24 rounded-2xl"
-                  />
-                  <div>
-                    <Input id="picture" type="file" className="text-sm" />
-                    <p className="mt-2 text-sm text-slate-600">
-                      JPG or PNG. 1MB max.
-                    </p>
-                  </div>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <Image
+        src={data?.avatarUrl ?? ""}
+        alt="Profile picture"
+        width={400}
+        height={400}
+        className="h-24 w-24 rounded-2xl"
+      />
         <FormField
           control={form.control}
           name="fullName"
@@ -100,7 +78,7 @@ export function ProfileSettingsView() {
               </FormControl>
               <FormMessage />
               <FormDescription>
-                This is how other users will see you on <b>Izeat</b>.
+                This is the name that will be displayed on your profile.
               </FormDescription>
             </FormItem>
           )}

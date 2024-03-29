@@ -1,9 +1,7 @@
+import { PlayView } from "~/components/play";
+
 const PlayPage = () => {
-  return (
-    <div>
-      <h1>Play Page</h1>
-    </div>
-  );
+  return <PlayView />;
 };
 
 export default PlayPage;
