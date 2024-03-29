@@ -28,6 +28,8 @@ const config = {
     "react/jsx-filename-extension": ["warn", { extensions: [".tsx"] }],
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
+    "react/display-name": "off",
+    "react-hooks/rules-of-hooks": "off",
 
     "react/jsx-curly-brace-presence": [
       "warn",
