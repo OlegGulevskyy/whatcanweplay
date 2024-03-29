@@ -7,6 +7,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
+import {
+  StarFilledIcon,
+} from "@radix-ui/react-icons";
 
 import { cn } from "~/utils/cn";
 import { Button } from "~/components/ui/button";
@@ -51,23 +54,17 @@ export function MainLayout({ children }: PropsWithChildren) {
                 <div className="flex h-16 justify-between">
                   <div className="flex">
                     <div className="flex flex-shrink-0 items-center">
-                      <Link href="/">
-                        <Image
-                          height={32}
-                          width={32}
-                          className="block h-8 w-auto lg:hidden"
-                          src="/assets/logos/Izeat_Logo_Reduced_Purple.svg"
-                          alt="Izeat Logo"
-                        />
+                      <Link
+                        className="inline-block h-8 w-auto lg:hidden"
+                        href="/"
+                      >
+                        <StarFilledIcon className="h-8 w-auto" />
                       </Link>
-                      <Link href="/">
-                        <Image
-                          height={32}
-                          width={32}
-                          className="hidden h-8 w-auto lg:block"
-                          src="/assets/logos/Izeat_Logo_Full_Purple.svg"
-                          alt="Izeat Logo"
-                        />
+                      <Link
+                        className="hidden h-8 w-auto flex-row items-center gap-2 lg:flex"
+                        href="/"
+                      >
+                        <StarFilledIcon className="h-8 w-auto" />
                       </Link>
                     </div>
                     <HeaderDesktop />
@@ -269,15 +266,11 @@ export function MainLayout({ children }: PropsWithChildren) {
                   {appNav.map((item) => (
                     <Link key={item.name} href={item.href} className="w-full">
                       <Button
-                        className="flex w-full items-center gap-2"
-                        variant={
-                          pathWithoutLang.includes(item.href) ||
-                          (item.isHome && pathWithoutLang === "/")
-                            ? "default"
-                            : "secondary"
-                        }
+                        className="flex w-full items-center gap-4"
+                        variant={"default"}
                       >
-                        <item.icon className="h-8 w-6" />
+                        <item.icon className="h-8 w-6 text-yellow-400" />
+                        <span className="text-lg font-bold">{item.name}</span>
                       </Button>
                     </Link>
                   ))}

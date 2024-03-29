@@ -1,35 +1,22 @@
-import {
-  BuildingStorefrontIcon,
-  HomeIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
-import { MessageCircleIcon } from "lucide-react";
+import { MagicWandIcon } from "@radix-ui/react-icons";
 
 const SETTINGS_ROUTE_PATH = "/settings";
+const HISTORY_ROUTE_PATH = "/history";
+const SEND_MESSAGE_ROUTE_PATH = "/send-message";
 
 export const appNav = [
-  { name: "Home", href: "/#", icon: HomeIcon, isHome: true },
   {
-    name: "Messages",
-    href: "/messages",
-    icon: MessageCircleIcon,
-    isProtected: true,
-  },
-  {
-    name: "Products",
-    href: "/products",
-    icon: BuildingStorefrontIcon,
-    isProtected: true,
-  },
-  {
-    name: "Profile",
-    href: "/settings/profile",
-    icon: UserIcon,
-    isProtected: true,
+    name: "Play",
+    href: "/play",
+    icon: MagicWandIcon,
   },
 ];
 
-export const userNav = [{ name: "Settings", href: SETTINGS_ROUTE_PATH }];
+export const userNav = [
+  { name: "Settings", href: SETTINGS_ROUTE_PATH },
+  { name: "History", href: HISTORY_ROUTE_PATH },
+  { name: "Send us a message", href: SEND_MESSAGE_ROUTE_PATH },
+];
 
 export const POST_PRODUCT_PATH = "/products/new";
 
@@ -38,9 +25,3 @@ export const settingsNav = [
   { name: "Profile", href: SETTINGS_ROUTE_PATH + "/profile" },
   { name: "Billing", href: SETTINGS_ROUTE_PATH + "/billing" },
 ];
-
-export const CREATE_PRODUCT_PATH = "/products/new";
-export const CREATE_PRODUCT_TITLE_PATH = CREATE_PRODUCT_PATH + "/title";
-export const CREATE_PRODUCT_DESCRIBE_PATH = CREATE_PRODUCT_PATH + "/describe";
-export const CREATE_PRODUCT_PHOTO_PATH = CREATE_PRODUCT_PATH + "/photo";
-export const CREATE_PRODUCT_ADDRESS_PATH = CREATE_PRODUCT_PATH + "/address";

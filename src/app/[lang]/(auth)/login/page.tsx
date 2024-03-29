@@ -13,10 +13,10 @@ const Page = () => {
   };
 
   return (
-    <section className="flex h-full flex-col gap-12">
+    <section className="flex h-full flex-col gap-8">
       <div className="flex flex-col gap-2">
-        <h1 className="text-center text-3xl font-bold leading-tight tracking-tight text-gray-900">
-          Sign in to Izeat
+        <h1 className="text-center text-3xl font-bold leading-tight tracking-tight text-gray-900 mt-10">
+          Sign in to continue
         </h1>
         <p className="text-md text-center text-slate-700">
           To continue using <span className="font-bold">Izeat</span>, please
