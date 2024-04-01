@@ -11,13 +11,15 @@ export const metadata = {
 const LoginPage = async () => {
   const h = headers();
   const referer = h.get("referer");
+  const nextReferer = referer;
+
   const { user } = await getServerUser();
 
   if (user) {
-    redirect(referer || "/");
+    redirect(nextReferer || "/");
   }
 
-  return <LoginView referer={referer} />;
+  return <LoginView referer={nextReferer} />;
 };
 
 export default LoginPage;

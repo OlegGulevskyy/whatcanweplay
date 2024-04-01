@@ -69,4 +69,8 @@ export const gameRouter = createTRPCRouter({
         prompt,
       });
     }),
+  create: privateProcedure.input(z.object({})).mutation(({ input, ctx }) => {
+    const { user } = ctx;
+    console.log("creating game endpoint :: ", user.email);
+  }),
 });
