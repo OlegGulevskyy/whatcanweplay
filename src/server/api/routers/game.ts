@@ -32,7 +32,7 @@ const buildPrompt = ({
   return prompt;
 };
 
-export const gamesRouter = createTRPCRouter({
+export const gameRouter = createTRPCRouter({
   generate: privateProcedure
     .input(
       z.object({
