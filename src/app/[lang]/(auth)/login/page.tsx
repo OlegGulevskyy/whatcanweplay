@@ -1,46 +1,23 @@
-"use client";
+import { headers } from "next/headers";
+import { LoginView } from "../_components/login-view";
+import { getServerUser } from "~/utils/auth";
+import { redirect } from "next/navigation";
 
-import { type Provider } from "@supabase/supabase-js";
-import { Icons } from "~/components/icons";
-import { PageLayout } from "~/components/page-layout";
-import { Button } from "~/components/ui/button";
-import { supabase } from "~/server/supabase/supabaseClient";
-
-const Page = () => {
-  const signInWithOauth = (provider: Provider) => {
-    void supabase().auth.signInWithOAuth({
-      provider: provider,
-    });
-  };
-
-  return (
-    <PageLayout>
-      <PageLayout.Header />
-      <section className="flex h-full flex-col gap-8">
-        <div className="flex flex-col gap-2">
-          <h1 className="mt-10 text-center text-3xl font-bold leading-tight tracking-tight text-gray-900">
-            Sign in to continue
-          </h1>
-          <p className="text-md text-center text-slate-700">
-            To continue using <span className="font-bold">Izeat</span>, please
-            sign in below.
-          </p>
-        </div>
-        <div className="flex items-center justify-center p-4">
-          <Button
-            variant="outline"
-            className="flex w-full flex-row gap-4 p-6 text-lg"
-            onClick={() => {
-              signInWithOauth("google");
-            }}
-          >
-            <Icons.google width={24} />
-            Sign in with Google
-          </Button>
-        </div>
-      </section>
-    </PageLayout>
-  );
+export const metadata = {
+  title: "Login to WhatCanWePlay",
+  description: "Login to continue using WhatCanWePlay",
 };
 
-export default Page;
+const LoginPage = async () => {
+  const h = headers();
+  const referer = h.get("referer");
+  const { user } = await getServerUser();
+
+  if (user) {
+    redirect(referer || "/");
+  }
+
+  return <LoginView referer={referer} />;
+};
+
+export default LoginPage;

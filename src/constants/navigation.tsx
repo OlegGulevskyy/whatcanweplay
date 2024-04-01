@@ -1,9 +1,10 @@
 import { MagicWandIcon } from "@radix-ui/react-icons";
 
-const SETTINGS_ROUTE_PATH = "/settings";
-const HISTORY_ROUTE_PATH = "/history";
-const SEND_MESSAGE_ROUTE_PATH = "/send-message";
+export const SETTINGS_ROUTE_PATH = "/settings";
+export const HISTORY_ROUTE_PATH = "/history";
+export const SEND_MESSAGE_ROUTE_PATH = "/send-message";
 export const PLAY_ROUTE_PATH = "/play";
+export const LOGIN_ROUTE_PATH = "/login";
 
 export const appNav = [
   {
