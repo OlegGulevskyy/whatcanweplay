@@ -16,7 +16,7 @@ const LoginPage = async () => {
   const { user } = await getServerUser();
 
   if (user) {
-    redirect(nextReferer || "/");
+    return redirect(nextReferer || "/");
   }
 
   return <LoginView referer={nextReferer} />;
