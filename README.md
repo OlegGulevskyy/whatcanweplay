@@ -6,13 +6,12 @@ This is a starter project/boilerplate to start out with:
 
 - TRPC
 - App directory/router
-- Prisma
 - Supabase (Auth, Storage, Serverless Queries)
 - Tailwind
 - Edge Ready
 - Umami analytics
 
-It allows us to call database in server components through supabase-js, for client component we are using trpc+prisma due to the superior DX
+It allows us to call database in server components through supabase-js, for client component we are using trpc due to the superior DX
 
 ## Projects using this starter
 
@@ -88,7 +87,6 @@ yarn dev
 If you are not familiar with the different technologies used in this project, please refer to the respective docs.
 
 - [Next.js app router](https://nextjs.org/docs)
-- [Prisma](https://prisma.io)
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
 - [Supabase](https://supabase.com/docs)

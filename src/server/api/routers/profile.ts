@@ -2,9 +2,22 @@ import { z } from "zod";
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 
 export const profileRouter = createTRPCRouter({
-  get: privateProcedure.query(({ ctx }) => {
-    const profile = ctx.db.from("profiles").select("*").eq("id", ctx.user.id);
-    return profile;
+  get: privateProcedure.query(async ({ ctx }) => {
+    const profile = await ctx.db.from("profiles").select("*").eq("id", ctx.user.id).single();
+    if (profile.error) {
+      throw new Error("Error retrieving profile");
+    }
+
+    if (profile.data === null) {
+      throw new Error("Profile not found");
+    }
+
+    return {
+      id: profile.data.id,
+      fullName: profile.data.full_name,
+      avatarUrl: profile.data.avatar_url,
+      langPref: profile.data.language_preference,
+    };
   }),
   updateProfile: privateProcedure
     .input(
