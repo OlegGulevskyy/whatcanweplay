@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 import Image from "next/image";
 import { MagicWandIcon, ReloadIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
@@ -144,7 +144,7 @@ export function PlayView() {
                   <FormControl>
                     <Input
                       {...field}
-                      type={"number"}
+                      type="number"
                       disabled={allFieldsDisabled}
                     />
                   </FormControl>
@@ -168,7 +168,7 @@ export function PlayView() {
                     <div className="flex flex-row items-center gap-4">
                       <Input
                         {...field}
-                        type={"number"}
+                        type="number"
                         className="w-1/2"
                         disabled={allFieldsDisabled}
                       />
@@ -195,7 +195,7 @@ export function PlayView() {
                     <div className="flex flex-row items-center gap-4">
                       <Input
                         {...field}
-                        type={"number"}
+                        type="number"
                         className="w-1/2"
                         disabled={allFieldsDisabled}
                       />

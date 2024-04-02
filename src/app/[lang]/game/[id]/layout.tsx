@@ -1,6 +1,6 @@
 "use client";
 
-import { PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
 import { PageLayout } from "~/components/page-layout";
 
 const GameDetailsLayout = ({ children }: PropsWithChildren) => {

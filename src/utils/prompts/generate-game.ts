@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { GenerateGameSchema } from "~/components/play/form-schema";
+import { type z } from "zod";
+import { type GenerateGameSchema } from "~/components/play/form-schema";
 
 export const getGenerateGamePrompt = ({
   location,

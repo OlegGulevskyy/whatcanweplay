@@ -1,7 +1,8 @@
 "use client";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
-import { PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
+
 import { env } from "~/env.mjs";
 
 if (typeof window !== "undefined") {

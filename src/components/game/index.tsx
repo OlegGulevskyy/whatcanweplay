@@ -1,6 +1,6 @@
-import { Database } from "~/server/supabase/supabaseTypes";
+import { type Database } from "~/server/supabase/supabaseTypes";
 
-type GameDetailsViewProps = {} & Database["public"]["Tables"]["games"]["Row"];
+type GameDetailsViewProps = Database["public"]["Tables"]["games"]["Row"];
 
 const lines = (text: string) => text.split("\n");
 
