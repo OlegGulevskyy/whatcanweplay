@@ -25,9 +25,9 @@ import { GenerateGameSchema } from "~/components/play/form-schema";
 import { toast } from "~/components/ui/use-toast";
 import { useUser } from "~/providers/AuthProvider/AuthProvider";
 import { LOGIN_ROUTE_PATH } from "~/constants/navigation";
+import { useRouter } from "next/navigation";
 
 const CTAButton = ({
-  onCtaClick,
   isLoading,
   ctaLabel,
 }: {
@@ -38,10 +38,7 @@ const CTAButton = ({
   const user = useUser();
   if (!user.session) {
     return (
-      <Link
-        href={LOGIN_ROUTE_PATH}
-        className="w-full"
-      >
+      <Link href={LOGIN_ROUTE_PATH} className="w-full">
         <Button className="w-full">
           <span className="text-lg font-bold">Sign in to generate</span>
         </Button>
@@ -54,7 +51,6 @@ const CTAButton = ({
       form="generate-game-form"
       className="flex w-full flex-row gap-4"
       type="submit"
-      onClick={onCtaClick}
       disabled={isLoading || !user.session}
     >
       {isLoading ? (
@@ -78,28 +74,27 @@ export function PlayView() {
     },
   });
 
-  const { mutateAsync: generateGame, isLoading: isGameGenerating } =
-    api.game.generate.useMutation();
+  const { mutateAsync: createGame, isLoading: isGameCreating } =
+    api.game.create.useMutation();
 
-  const allFieldsDisabled = isGameGenerating;
+  const router = useRouter();
+
+  const allFieldsDisabled = isGameCreating;
 
   function submitGeneration() {
     const values = form.getValues();
-    generateGame(values)
+    createGame(values)
       .then((res) => {
-        console.log("Generated game response");
-        console.log(res);
+        router.push(`/game/${res.id}`);
       })
-      .catch((_err) => {
+      .catch((err) => {
         toast({
           variant: "destructive",
           title: "Something went wrong 🤯",
           description:
             "Failed to generate a game. Please try again or reach out for support.",
         });
-        console.warn("Failed to generate game", _err);
-
-        // TODO: log error to Discord with description and user
+        console.warn("Failed to generate game", err);
       });
   }
 
@@ -269,8 +264,8 @@ export function PlayView() {
       <PageLayout.Footer>
         <CTAButton
           onCtaClick={submitGeneration}
-          isLoading={isGameGenerating}
-          ctaLabel={isGameGenerating ? "Generating..." : "Generate Game"}
+          isLoading={isGameCreating}
+          ctaLabel={isGameCreating ? "Creating your game.." : "Create Game"}
         />
       </PageLayout.Footer>
     </PageLayout>

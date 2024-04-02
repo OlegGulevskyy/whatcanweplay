@@ -3,11 +3,7 @@ import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 
 export const profileRouter = createTRPCRouter({
   get: privateProcedure.query(({ ctx }) => {
-    const profile = ctx.db.profiles.findFirst({
-      where: {
-        id: ctx.user.id,
-      },
-    });
+    const profile = ctx.db.from("profiles").select("*").eq("id", ctx.user.id);
     return profile;
   }),
   updateProfile: privateProcedure
@@ -19,16 +15,14 @@ export const profileRouter = createTRPCRouter({
       }),
     )
     .mutation(({ ctx, input }) => {
-      return ctx.db.profiles.update({
-        where: {
-          id: ctx.user.id,
-        },
-        data: {
-          fullName: input.fullName,
-          avatarUrl: input.avatarUrl,
-          languagePreference: input.langPref,
-          updatedAt: new Date(),
-        },
-      });
+      return ctx.db
+        .from("profiles")
+        .update({
+          full_name: input.fullName,
+          avatar_url: input.avatarUrl,
+          language_preference: input.langPref,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", ctx.user.id);
     }),
 });

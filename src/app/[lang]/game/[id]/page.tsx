@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 
 import { LOGIN_ROUTE_PATH } from "~/constants/navigation";
-import { api } from "~/trpc/server";
 import { getServerUser } from "~/utils/auth";
 
 export const metadata = {
@@ -11,14 +10,13 @@ export const metadata = {
 
 const GamePage = async ({ params }: { params: { id: string } }) => {
   const { user } = await getServerUser();
+  console.log("params", params.id)
 
   if (!user) {
     // TODO: fix redirecting back to the game page after login
     // Right now it's garbage
     redirect(LOGIN_ROUTE_PATH);
   }
-
-  // const serverApi = api.game.create.mutate({});
 
   return (
     <div>
