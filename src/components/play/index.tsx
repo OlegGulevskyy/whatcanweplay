@@ -6,6 +6,7 @@ import { type z } from "zod";
 import Image from "next/image";
 import { MagicWandIcon, ReloadIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
@@ -24,8 +25,11 @@ import { LocationComboBox } from "~/components/location-combo-box";
 import { GenerateGameSchema } from "~/components/play/form-schema";
 import { toast } from "~/components/ui/use-toast";
 import { useUser } from "~/providers/AuthProvider/AuthProvider";
-import { LOGIN_ROUTE_PATH } from "~/constants/navigation";
-import { useRouter } from "next/navigation";
+import {
+  LOGIN_ROUTE_PATH,
+  SETTINGS_BILLING_ROUTE_PATH,
+} from "~/constants/navigation";
+import { useBilling } from "~/hooks/use-billing";
 
 const CTAButton = ({
   isLoading,
@@ -36,11 +40,31 @@ const CTAButton = ({
   ctaLabel: string;
 }) => {
   const user = useUser();
+  const { canGenerateGame, isLoading: isLoadingBilling } = useBilling();
+
   if (!user.session) {
     return (
       <Link href={LOGIN_ROUTE_PATH} className="w-full">
         <Button className="w-full">
           <span className="text-lg font-bold">Sign in to generate</span>
+        </Button>
+      </Link>
+    );
+  }
+
+  if (isLoadingBilling) {
+    return (
+      <Button className="flex w-full flex-row gap-4" disabled>
+        <ReloadIcon className="h-6 w-auto animate-spin" />
+      </Button>
+    );
+  }
+
+  if (!canGenerateGame) {
+    return (
+      <Link href={SETTINGS_BILLING_ROUTE_PATH} className="w-full">
+        <Button className="flex w-full flex-row gap-4">
+          <span className="text-lg font-bold">🙏 Upgrade to generate</span>
         </Button>
       </Link>
     );

@@ -3,7 +3,11 @@ import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 
 export const profileRouter = createTRPCRouter({
   get: privateProcedure.query(async ({ ctx }) => {
-    const profile = await ctx.db.from("profiles").select("*").eq("id", ctx.user.id).single();
+    const profile = await ctx.db
+      .from("profiles")
+      .select("*")
+      .eq("id", ctx.user.id)
+      .single();
     if (profile.error) {
       throw new Error("Error retrieving profile");
     }
@@ -17,6 +21,9 @@ export const profileRouter = createTRPCRouter({
       fullName: profile.data.full_name,
       avatarUrl: profile.data.avatar_url,
       langPref: profile.data.language_preference,
+      creditsAvailable: profile.data.credits_available,
+      subscriptionStatus: profile.data.subscription_status,
+      customerStripeId: profile.data.stripe_customer_id,
     };
   }),
   updateProfile: privateProcedure

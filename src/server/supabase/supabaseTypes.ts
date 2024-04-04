@@ -82,28 +82,37 @@ export interface Database {
         Row: {
           avatar_url: string | null
           created_at: string | null
+          credits_available: number
           email: string | null
           full_name: string | null
           id: string
           language_preference: string | null
+          stripe_customer_id: string | null
+          subscription_status: string | null
           updated_at: string | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string | null
+          credits_available?: number
           email?: string | null
           full_name?: string | null
           id: string
           language_preference?: string | null
+          stripe_customer_id?: string | null
+          subscription_status?: string | null
           updated_at?: string | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string | null
+          credits_available?: number
           email?: string | null
           full_name?: string | null
           id?: string
           language_preference?: string | null
+          stripe_customer_id?: string | null
+          subscription_status?: string | null
           updated_at?: string | null
         }
       }
@@ -111,6 +120,7 @@ export interface Database {
         Row: {
           amount_of_players: number | null
           created_at: string | null
+          created_by: string | null
           custom_instructions: string | null
           duration: number | null
           game: string | null
@@ -123,6 +133,7 @@ export interface Database {
         Insert: {
           amount_of_players?: number | null
           created_at?: string | null
+          created_by?: string | null
           custom_instructions?: string | null
           duration?: number | null
           game?: string | null
@@ -135,6 +146,7 @@ export interface Database {
         Update: {
           amount_of_players?: number | null
           created_at?: string | null
+          created_by?: string | null
           custom_instructions?: string | null
           duration?: number | null
           game?: string | null

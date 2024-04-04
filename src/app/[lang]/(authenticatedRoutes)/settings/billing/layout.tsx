@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 
 export const metadata = {
-  title: "Izeat - Billing",
+  title: "What Can We Play - Billing",
   description: "Billing settings page",
 };
 

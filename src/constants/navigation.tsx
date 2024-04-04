@@ -6,10 +6,14 @@ export const SEND_MESSAGE_ROUTE_PATH = "/send-message";
 export const PLAY_ROUTE_PATH = "/play";
 export const LOGIN_ROUTE_PATH = "/login";
 
+export const SETTINGS_BILLING_ROUTE_PATH = SETTINGS_ROUTE_PATH + "/billing";
+export const SETTINGS_PROFILE_ROUTE_PATH = SETTINGS_ROUTE_PATH + "/profile";
+export const SETTINGS_GENERAL_ROUTE_PATH = SETTINGS_ROUTE_PATH + "/general";
+
 export const settingsNav = [
-  { name: "General", href: SETTINGS_ROUTE_PATH + "/general" },
-  { name: "Profile", href: SETTINGS_ROUTE_PATH + "/profile" },
-  { name: "Billing", href: SETTINGS_ROUTE_PATH + "/billing" },
+  { name: "General", href: SETTINGS_GENERAL_ROUTE_PATH },
+  { name: "Profile", href: SETTINGS_PROFILE_ROUTE_PATH },
+  { name: "Billing", href: SETTINGS_BILLING_ROUTE_PATH },
 ];
 
 export const appNav = [
