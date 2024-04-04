@@ -1,6 +1,6 @@
 import { useState, useEffect, useTransition, useRef } from "react";
 
-export const useServerAction = <P extends any[], R>(
+export const useServerAction = <P extends unknown[], R>(
   action: (...args: P) => Promise<R>,
   onFinished?: (_: R | undefined) => void,
 ): [(...args: P) => Promise<R | undefined>, boolean] => {

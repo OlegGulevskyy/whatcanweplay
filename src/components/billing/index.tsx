@@ -145,7 +145,7 @@ export const BillingView = () => {
             <p className="mt-4 inline-flex px-4 text-slate-700"></p>
             <div className="px-4">
               <Link href={PLAY_ROUTE_PATH}>
-                <Button className="w-full text-md">Let's generate a game!</Button>
+                <Button className="w-full text-md">Let&apos;s generate a game!</Button>
               </Link>
             </div>
           </div>
