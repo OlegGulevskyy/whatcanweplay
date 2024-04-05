@@ -22,6 +22,7 @@ export const env = createEnv({
     OPENAI_API_KEY: z.string().min(1),
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
+    DISCORD_WEBHOOK_URL_MESSAGES: z.string().min(1),
     DISCORD_WEBHOOK_URL: z.string().min(1),
   },
 
@@ -40,6 +41,7 @@ export const env = createEnv({
     NEXT_PUBLIC_STRIPE_PRICE_ID_LOW: z.string(),
     NEXT_PUBLIC_STRIPE_PRICE_ID_MID: z.string(),
     NEXT_PUBLIC_STRIPE_PRICE_ID_HIGH: z.string(),
+
   },
 
   /**
@@ -61,6 +63,7 @@ export const env = createEnv({
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     NEXT_PUBLIC_STRIPE_PRICE_ID: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID,
+    DISCORD_WEBHOOK_URL_MESSAGES: process.env.DISCORD_WEBHOOK_URL_MESSAGES,
     DISCORD_WEBHOOK_URL: process.env.DISCORD_WEBHOOK_URL,
 
     NEXT_PUBLIC_STRIPE_PRICE_ID_LOW:

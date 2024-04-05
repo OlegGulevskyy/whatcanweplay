@@ -76,10 +76,10 @@ export async function POST(req: Request) {
             .update({ is_premium: true })
             .eq("email", data.customer_email);
 
-          postDiscordMessage(
-            `Payment received - ${foundPack.price}!`,
-            data.customer_email,
-          );
+          postDiscordMessage({
+            message: `Payment received - ${foundPack.price}!`,
+            user: data.customer_email,
+          });
 
           posthogClient.capture({
             distinctId: data.customer_email,
