@@ -8,9 +8,8 @@ import { CURRENCY } from "~/constants";
 import { formatAmountForStripe } from "~/utils/price-helpers";
 import { stripe } from "~/lib/stripe";
 import { SETTINGS_BILLING_ROUTE_PATH } from "~/constants/navigation";
-import { env } from "~/env.mjs";
 
-export async function createCheckoutSession(): Promise<{
+export async function createCheckoutSession(priceId: string): Promise<{
   client_secret: string | null;
   url: string | null;
 }> {
@@ -22,7 +21,7 @@ export async function createCheckoutSession(): Promise<{
       line_items: [
         {
           quantity: 1,
-          price: env.NEXT_PUBLIC_STRIPE_PRICE_ID,
+          price: priceId,
         },
       ],
       success_url: `${origin}${SETTINGS_BILLING_ROUTE_PATH}?session_id={CHECKOUT_SESSION_ID}`,

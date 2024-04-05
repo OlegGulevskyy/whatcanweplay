@@ -17,17 +17,73 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/use-toast";
 import { formatAmountForDisplay } from "~/utils/price-helpers";
-import { PRICE } from "~/constants/billing";
+import { PRICE_PACKS } from "~/constants/billing";
 import { useServerAction } from "~/hooks/use-server-action";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import { useBilling } from "~/hooks/use-billing";
+import { cn } from "~/utils/cn";
 
-const getSubStatus = (status: string | null | undefined) => {
-  if (!status) {
-    return "free tier";
-  }
-  return "Premium ⭐";
+type AvailablePackProps = {
+  label: string;
+  credits: number;
+  price: number;
+  bonus?: number;
+  handleSelectPack: () => void;
+  disabled: boolean;
+  isLoading: boolean;
+  isBestValue?: boolean;
+};
+const AvailablePack = ({
+  label,
+  price,
+  credits,
+  handleSelectPack,
+  disabled,
+  bonus,
+  isLoading,
+  isBestValue,
+}: AvailablePackProps) => {
+  return (
+    <div
+      className={cn(
+        "m-4 rounded-lg border border-slate-200 p-4",
+        isBestValue &&
+          "bg-gradient-to-r from-indigo-500/20 via-purple-500/10 to-pink-500/20",
+        isBestValue && "border-indigo-500",
+      )}
+    >
+      <p
+        className={cn("text-lg font-medium", isBestValue && "text-indigo-600")}
+      >
+        {label}
+      </p>
+      <div className="mt-2 flex items-baseline text-2xl font-semibold text-indigo-600">
+        {credits}
+        {bonus && (
+          <span className="ml-2 text-md font-medium">
+            + {bonus}
+          </span>
+        )}
+        <span className="ml-2 text-sm font-medium text-gray-500">
+          credits / <b>{formatAmountForDisplay(price, "eur")}</b>
+        </span>
+      </div>
+      <Button
+        onClick={handleSelectPack}
+        className="text-md mt-6 w-full"
+        disabled={disabled}
+      >
+        {isLoading ? (
+          <ReloadIcon className="h-6 w-auto animate-spin" />
+        ) : (
+          <span>
+            Grab <b>{label}</b>
+          </span>
+        )}
+      </Button>
+    </div>
+  );
 };
 
 const GetInTouchBlock = () => {
@@ -66,8 +122,8 @@ export const BillingView = () => {
     string | null | undefined
   >(null);
 
-  const handleSubscribe = async () => {
-    const checkoutSession = await createCheckout();
+  const handleSelectPack = async (id: string) => {
+    const checkoutSession = await createCheckout(id);
     if (!checkoutSession || !checkoutSession.url) {
       toast({
         variant: "destructive",
@@ -106,7 +162,7 @@ export const BillingView = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pb-12">
       <div className="m-4 rounded-lg border border-slate-200 p-4">
         <p className="text-lg font-medium text-slate-500">Available Credits</p>
         <div className="flex items-baseline text-2xl font-semibold text-indigo-600">
@@ -115,25 +171,15 @@ export const BillingView = () => {
           ) : (
             <span>Unlimited</span>
           )}
-          <span className="ml-2 text-sm font-medium text-gray-500">
-            / {getSubStatus(profileData?.subscriptionStatus)}
-          </span>
         </div>
-        {billingPortalUrl && (
-          <a href={billingPortalUrl ?? ""} target="_blank">
-            <Button className="mt-6 w-full" variant="outline">
-              Manage my subscription
-            </Button>
-          </a>
-        )}
       </div>
 
       <div>
-        {profileData?.subscriptionStatus ? (
+        {customerStripeId ? (
           <div>
             <p className="text-center text-xl font-bold">Thank you! 🙏</p>
             <p className="mt-4 px-4 text-slate-700">
-              Your subscription means a world to me! 🌍{" "}
+              Your purchase(s) mean a world to me! 🌍
             </p>
             <p className="mt-4 inline-flex px-4 text-slate-700">
               Do not hesitate to get in touch with me, I am looking for
@@ -142,45 +188,35 @@ export const BillingView = () => {
             <div className="px-4">
               <GetInTouchBlock />
             </div>
-            <p className="mt-4 inline-flex px-4 text-slate-700"></p>
             <div className="px-4">
               <Link href={PLAY_ROUTE_PATH}>
-                <Button className="w-full text-md">Let&apos;s generate a game!</Button>
+                <Button className="text-md w-full">
+                  Let&apos;s generate a game!
+                </Button>
               </Link>
             </div>
           </div>
         ) : (
           <div>
             <h1 className="ml-4 text-lg font-bold text-slate-600">
-              Available Plans
+              Available packs
             </h1>
-
-            <div className="m-4 rounded-lg border border-slate-200 p-4">
-              <p className="text-lg font-medium text-slate-500">Premium 🔥</p>
-              <div className="mt-2 flex items-baseline text-2xl font-semibold text-indigo-600">
-                Unlimited
-                <span className="ml-2 text-sm font-medium text-gray-500">
-                  credits /{" "}
-                  <b>{formatAmountForDisplay(PRICE, "eur")} per month</b>
-                </span>
-              </div>
-              <Button
-                onClick={handleSubscribe}
-                className="text-md mt-6 w-full"
+            {PRICE_PACKS.map((pack) => (
+              <AvailablePack
+                key={pack.priceId}
+                label={pack.label}
+                price={pack.price}
+                credits={pack.credits}
                 disabled={isCheckoutLoading}
-              >
-                {isCheckoutLoading ? (
-                  <ReloadIcon className="h-6 w-auto animate-spin" />
-                ) : (
-                  <span>Subscribe</span>
-                )}
-              </Button>
-              <p className="mt-2 text-right italic text-slate-500">
-                *Cancel anytime
-              </p>
-            </div>
+                isLoading={isCheckoutLoading}
+                handleSelectPack={() => handleSelectPack(pack.priceId)}
+                bonus={pack.bonus}
+                isBestValue={pack.isBestValue}
+              />
+            ))}
+
             <p className="mt-8 px-4 text-slate-600">
-              By subscribing, you support{" "}
+              By purchasing a pack, you support{" "}
               <a
                 href="https://twitter.com/preacher_rourke"
                 className="inline-flex items-center gap-1 text-indigo-700 underline underline-offset-2"
@@ -189,7 +225,8 @@ export const BillingView = () => {
                 me {<TwitterIcon className="h-5 w-5" />}
               </a>{" "}
               and my fiancee in our preparation for the wedding and our
-              honeymoon . <br />
+              honeymoon.
+              <br />
               <br />
               <span className="font-bold">Thank you for considering! 🙏💝</span>
             </p>
