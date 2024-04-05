@@ -154,8 +154,9 @@ export const gameRouter = createTRPCRouter({
         .single();
 
       const currentCredits = billingData?.credits_available || 0;
-      const isPremium = billingData?.subscription_status === PREMIUM_STATUS;
       const newCredits = currentCredits - 1;
+
+      console.log("Start generating game");
 
       await experimental_generateText({
         model: openai.chat("gpt-4-0125-preview"),
@@ -182,14 +183,10 @@ export const gameRouter = createTRPCRouter({
                 .select("id")
                 .single();
 
-              if (!isPremium) {
-                await db
-                  .from("profiles")
-                  .update({
-                    credits_available: newCredits,
-                  })
-                  .eq("id", user.id);
-              }
+              await db.rpc("decrementby", {
+                x: 1,
+                user_email: user.email!,
+              });
 
               if (gameSaveResult.error) {
                 posthogClient.capture({
@@ -211,6 +208,7 @@ export const gameRouter = createTRPCRouter({
                 properties: {
                   game_id: gameSaveResult.data.id,
                   email: ctx.user.email,
+                  remaining_credits: newCredits,
                 },
               });
 
