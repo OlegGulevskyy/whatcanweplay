@@ -1,6 +1,5 @@
 # T3 stack + Supabase + App directory
 
-
 This project is Edge ready (Vercel Edge runtime)
 
 This is a starter project/boilerplate to start out with:
