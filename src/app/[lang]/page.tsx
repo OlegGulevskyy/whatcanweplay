@@ -32,7 +32,7 @@ export default async function Home({ params }: PageProps) {
   return (
     <MainLayout>
       <div className="overflow-y-auto p-4 py-10">
-        <h1 className="mb-12 inline-block bg-gradient-to-r from-blue-600 via-yellow-500 to-indigo-400 bg-clip-text text-center text-4xl font-semibold text-transparent">
+        <h1 className="mb-12 inline-block bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-center text-4xl font-semibold text-transparent">
           What Can We Play?
         </h1>
         {slogans.map((sl, index) => (
