@@ -54,6 +54,57 @@ export const gameRouter = createTRPCRouter({
       return game.data;
     }),
 
+  getGamesByUser: privateProcedure
+    .input(
+      z
+        .object({
+          from: z.number().optional(),
+          to: z.number().optional(),
+          filterByLocation: z.string().optional(),
+        })
+        .optional(),
+    )
+    .query(async ({ ctx, input }) => {
+      const { db, user } = ctx;
+      const gamesReq = db
+        .from("games")
+        .select("*", { count: "exact" })
+        .eq("created_by", user.id)
+        .eq("is_deleted", false)
+        .order("created_at", { ascending: false })
+        .range(input?.from ?? 0, input?.to ?? 1);
+
+      if (input?.filterByLocation) {
+        gamesReq.eq("location", input.filterByLocation);
+      }
+      const { error, data, count } = await gamesReq;
+
+      if (error) {
+        posthogClient.capture({
+          distinctId: ctx.user.id,
+          event: "games_get_failed",
+          properties: {
+            ...error,
+            email: ctx.user.email,
+          },
+        });
+        throw new Error("Failed to get games");
+      }
+
+      posthogClient.capture({
+        distinctId: ctx.user.id,
+        event: "games_get",
+        properties: {
+          email: ctx.user.email,
+        },
+      });
+
+      return {
+        games: data,
+        totalCount: count,
+      };
+    }),
+
   create: privateProcedure
     .input(GenerateGameSchema)
     // Can be later extracted to other routes if required
@@ -74,7 +125,6 @@ export const gameRouter = createTRPCRouter({
 
       const isUnlimited = profile.data.subscription_status === PREMIUM_STATUS;
       const canCreateGame = isUnlimited || profile.data.credits_available > 0;
-      console.log("canCreateGame", canCreateGame, isUnlimited)
 
       if (!canCreateGame) {
         posthogClient.capture({
@@ -127,6 +177,7 @@ export const gameRouter = createTRPCRouter({
                   rules: data.rules,
                   additional_info: data.additionalInfo,
                   is_published: true,
+                  location: input.location,
                 })
                 .select("id")
                 .single();
@@ -191,5 +242,41 @@ export const gameRouter = createTRPCRouter({
       });
 
       return { id: gameId };
+    }),
+
+  deleteById: privateProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { db } = ctx;
+      const game = await db
+        .from("games")
+        .update({ is_deleted: true })
+        .eq("id", input.id)
+        .single();
+
+      if (game.error) {
+        posthogClient.capture({
+          distinctId: ctx.user.id,
+          event: "game_delete_failed",
+          properties: {
+            error: {
+              ...game.error,
+            },
+            email: ctx.user.email,
+          },
+        });
+        throw new Error("Failed to delete game");
+      }
+
+      posthogClient.capture({
+        distinctId: ctx.user.id,
+        event: "game_delete",
+        properties: {
+          game_id: input.id,
+          email: ctx.user.email,
+        },
+      });
+
+      return game.data;
     }),
 });

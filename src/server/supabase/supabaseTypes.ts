@@ -42,7 +42,9 @@ export interface Database {
           how_to_play: string | null
           how_to_win: string | null
           id: string
+          is_deleted: boolean
           is_published: boolean | null
+          location: string | null
           purpose: string | null
           rules: string[] | null
           setup: string[] | null
@@ -56,7 +58,9 @@ export interface Database {
           how_to_play?: string | null
           how_to_win?: string | null
           id?: string
+          is_deleted?: boolean
           is_published?: boolean | null
+          location?: string | null
           purpose?: string | null
           rules?: string[] | null
           setup?: string[] | null
@@ -70,7 +74,9 @@ export interface Database {
           how_to_play?: string | null
           how_to_win?: string | null
           id?: string
+          is_deleted?: boolean
           is_published?: boolean | null
+          location?: string | null
           purpose?: string | null
           rules?: string[] | null
           setup?: string[] | null
@@ -175,26 +181,38 @@ export interface Database {
     Tables: {
       buckets: {
         Row: {
+          allowed_mime_types: string[] | null
+          avif_autodetection: boolean | null
           created_at: string | null
+          file_size_limit: number | null
           id: string
           name: string
           owner: string | null
+          owner_id: string | null
           public: boolean | null
           updated_at: string | null
         }
         Insert: {
+          allowed_mime_types?: string[] | null
+          avif_autodetection?: boolean | null
           created_at?: string | null
+          file_size_limit?: number | null
           id: string
           name: string
           owner?: string | null
+          owner_id?: string | null
           public?: boolean | null
           updated_at?: string | null
         }
         Update: {
+          allowed_mime_types?: string[] | null
+          avif_autodetection?: boolean | null
           created_at?: string | null
+          file_size_limit?: number | null
           id?: string
           name?: string
           owner?: string | null
+          owner_id?: string | null
           public?: boolean | null
           updated_at?: string | null
         }
@@ -228,8 +246,10 @@ export interface Database {
           metadata: Json | null
           name: string | null
           owner: string | null
+          owner_id: string | null
           path_tokens: string[] | null
           updated_at: string | null
+          version: string | null
         }
         Insert: {
           bucket_id?: string | null
@@ -239,8 +259,10 @@ export interface Database {
           metadata?: Json | null
           name?: string | null
           owner?: string | null
+          owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          version?: string | null
         }
         Update: {
           bucket_id?: string | null
@@ -250,8 +272,10 @@ export interface Database {
           metadata?: Json | null
           name?: string | null
           owner?: string | null
+          owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          version?: string | null
         }
       }
     }
@@ -259,6 +283,15 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      can_insert_object: {
+        Args: {
+          bucketid: string
+          name: string
+          owner: string
+          metadata: Json
+        }
+        Returns: undefined
+      }
       extension: {
         Args: {
           name: string

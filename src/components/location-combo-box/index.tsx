@@ -19,25 +19,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { SEND_MESSAGE_ROUTE_PATH } from "~/constants/navigation";
-
-const locations = [
-  {
-    value: "bar",
-    label: "🍺 Bar",
-  },
-  {
-    value: "home",
-    label: "🏡 Home",
-  },
-  {
-    value: "car",
-    label: "🚐 Car",
-  },
-  {
-    value: "office",
-    label: "🏢 Office",
-  },
-];
+import { locations } from "~/constants/game-locations";
 
 export const LocationComboBox = React.forwardRef(
   (

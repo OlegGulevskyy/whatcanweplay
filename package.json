@@ -13,6 +13,7 @@
     "db:start": "npx supabase start",
     "db:stop": "npx supabase stop",
     "db:diff": "npx supabase db diff -f",
+    "db:push": "npx supabase db push",
     "translations:pull": "i18nexus pull -p ./src/app/i18n/locales",
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks",
     "fmt": "prettier --write ."
@@ -45,6 +46,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "0.2.0",
+    "date-fns": "3.6.0",
     "i18next": "^23.10.1",
     "i18next-browser-languagedetector": "^7.2.0",
     "i18next-resources-to-backend": "^1.2.0",

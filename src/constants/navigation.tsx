@@ -10,6 +10,10 @@ export const SETTINGS_BILLING_ROUTE_PATH = SETTINGS_ROUTE_PATH + "/billing";
 export const SETTINGS_PROFILE_ROUTE_PATH = SETTINGS_ROUTE_PATH + "/profile";
 export const SETTINGS_GENERAL_ROUTE_PATH = SETTINGS_ROUTE_PATH + "/general";
 
+export const GAME_ROUTE_PATH = "/game";
+
+export const getGameRoutePath = (gameId: string) => GAME_ROUTE_PATH + "/" + gameId;
+
 export const settingsNav = [
   { name: "General", href: SETTINGS_GENERAL_ROUTE_PATH },
   { name: "Profile", href: SETTINGS_PROFILE_ROUTE_PATH },
@@ -26,7 +30,7 @@ export const appNav = [
 
 export const userNav = [
   { name: "Settings", href: SETTINGS_ROUTE_PATH + "/general" },
-  { name: "History", href: HISTORY_ROUTE_PATH },
+  { name: "My games", href: HISTORY_ROUTE_PATH },
   { name: "Send us a message", href: SEND_MESSAGE_ROUTE_PATH },
 ];
 
