@@ -17,7 +17,7 @@ export const useBilling = () => {
   return {
     canGenerateGame,
     isLoading: isProfileLoading,
-    isPremium: profileData?.subscriptionStatus === PREMIUM_STATUS,
+    isPremium: profileData?.isPremium,
     customerStripeId: profileData?.customerStripeId,
   };
 };

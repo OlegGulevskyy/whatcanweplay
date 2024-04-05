@@ -4,7 +4,7 @@ export const postDiscordMessage = async (
   message: string,
   userName?: string,
 ) => {
-  const user = userName ? `**${userName}**` : "**SYSTEM**";
+  const user = userName ? `${userName}` : "**SYSTEM**";
 
   const response = await fetch(env.DISCORD_WEBHOOK_URL, {
     method: "POST",

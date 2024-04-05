@@ -6,6 +6,8 @@ export const SEND_MESSAGE_ROUTE_PATH = "/send-message";
 export const PLAY_ROUTE_PATH = "/play";
 export const LOGIN_ROUTE_PATH = "/login";
 
+export const THANK_YOU_ROUTE_PATH = "/thank-you";
+
 export const SETTINGS_BILLING_ROUTE_PATH = SETTINGS_ROUTE_PATH + "/billing";
 export const SETTINGS_PROFILE_ROUTE_PATH = SETTINGS_ROUTE_PATH + "/profile";
 export const SETTINGS_GENERAL_ROUTE_PATH = SETTINGS_ROUTE_PATH + "/general";

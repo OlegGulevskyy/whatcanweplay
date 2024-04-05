@@ -24,6 +24,7 @@ export const profileRouter = createTRPCRouter({
       creditsAvailable: profile.data.credits_available,
       subscriptionStatus: profile.data.subscription_status,
       customerStripeId: profile.data.stripe_customer_id,
+      isPremium: profile.data.is_premium,
     };
   }),
   updateProfile: privateProcedure

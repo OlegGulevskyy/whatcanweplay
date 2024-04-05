@@ -6,7 +6,7 @@ import { stripe } from "~/lib/stripe";
 import { env } from "~/env.mjs";
 import { supabase } from "~/server/supabase/supabaseClient";
 import { posthogClient } from "~/server/posthog";
-import { PREMIUM_STATUS } from "~/constants/billing";
+import { PRICE_PACKS } from "~/constants/billing";
 import { postDiscordMessage } from "~/lib/discord";
 
 export async function POST(req: Request) {
@@ -46,99 +46,60 @@ export async function POST(req: Request) {
         case "checkout.session.completed":
           data = event.data.object as Stripe.Checkout.Session;
           console.log(`💰 CheckoutSession status: ${data.payment_status}`);
+          const checkoutSession = await stripe.checkout.sessions.retrieve(
+            data.id,
+            {
+              expand: ["line_items"],
+            },
+          );
+
+          const [item] = checkoutSession.line_items?.data ?? [];
+          if (!item) {
+            break;
+          }
+
+          const foundPack = PRICE_PACKS.find(
+            (p) => p.priceId === item.price?.id,
+          );
+          if (!foundPack || !data.customer_email) {
+            break;
+          }
+
+          const sb = supabase();
+          const creditsToGive = foundPack.credits + (foundPack.bonus ?? 0);
+          await sb.rpc("incrementby", {
+            x: creditsToGive,
+            user_email: data.customer_email,
+          });
+          await sb
+            .from("profiles")
+            .update({ is_premium: true })
+            .eq("email", data.customer_email);
+
+          postDiscordMessage(
+            `Payment received - ${foundPack.price}!`,
+            data.customer_email,
+          );
+
+          posthogClient.capture({
+            distinctId: data.customer_email,
+            event: "payment_succeeded",
+            properties: {
+              payment_intent_id: data.id,
+              amount: foundPack.price,
+              currency: data.currency,
+            },
+          });
+          console.log(
+            `🎉 Added ${creditsToGive} credits to ${data.customer_email}. Received ${foundPack.price}!`,
+          );
+
           break;
         case "payment_intent.payment_failed":
           data = event.data.object as Stripe.PaymentIntent;
           console.log(`❌ Payment failed: ${data.last_payment_error?.message}`);
-          const { customer } = data;
-
-          if (!customer) {
-            posthogClient.capture({
-              distinctId: "unknown",
-              event: "payment_failed_no_customer",
-              properties: {
-                error: "No customer",
-                payment_intent_id: data.id,
-                amount: data.amount,
-                currency: data.currency,
-              },
-            });
-          }
-
-          const stripeCus = await stripe.customers.retrieve(
-            customer?.toString() ?? "",
-          );
-
-          if (stripeCus.deleted) {
-            console.log("customer was deleted, nothing to do");
-            return;
-          }
-
-          if (!stripeCus.email) {
-            return;
-          }
-
-          const sb = supabase();
-          await sb
-            .from("profiles")
-            .update({
-              subscription_status: null,
-            })
-            .eq("email", stripeCus.email);
-
           break;
-
         case "payment_intent.succeeded":
-          data = event.data.object as Stripe.PaymentIntent;
-          console.log(`💰 PaymentIntent status: ${data.status}`);
-          const customerId = data.customer;
-          const stripeCustomer = await stripe.customers.retrieve(
-            customerId?.toString() ?? "",
-          );
-          if (stripeCustomer.deleted) {
-            console.log("customer was deleted");
-            return;
-          }
-
-          if (!stripeCustomer.email) {
-            console.log("No email");
-            posthogClient.capture({
-              distinctId: stripeCustomer.id,
-              event: "payment_no_email",
-              properties: {
-                error: "No email",
-                payment_intent_id: data.id,
-                amount: data.amount,
-                currency: data.currency,
-              },
-            });
-            return;
-          }
-
-          const db = supabase();
-          const result = await db
-            .from("profiles")
-            .update({
-              stripe_customer_id: stripeCustomer.id,
-              subscription_status: PREMIUM_STATUS,
-            })
-            .eq("email", stripeCustomer.email);
-
-          console.log("Updated profile and set premium status");
-          console.log(result.error);
-          posthogClient.capture({
-            distinctId: stripeCustomer.id,
-            event: "payment_succeeded",
-            properties: {
-              email: stripeCustomer.email,
-              payment_intent_id: data.id,
-              amount: data.amount,
-              currency: data.currency,
-            },
-          });
-
-          await postDiscordMessage("Payment succeeded", stripeCustomer.email);
-
           break;
         default:
           throw new Error(`Unhandled event: ${event.type}`);

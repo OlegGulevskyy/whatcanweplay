@@ -7,9 +7,9 @@ import { headers } from "next/headers";
 import { CURRENCY } from "~/constants";
 import { formatAmountForStripe } from "~/utils/price-helpers";
 import { stripe } from "~/lib/stripe";
-import { SETTINGS_BILLING_ROUTE_PATH } from "~/constants/navigation";
+import { SETTINGS_BILLING_ROUTE_PATH, THANK_YOU_ROUTE_PATH } from "~/constants/navigation";
 
-export async function createCheckoutSession(priceId: string): Promise<{
+export async function createCheckoutSession(priceId: string, email: string): Promise<{
   client_secret: string | null;
   url: string | null;
 }> {
@@ -17,14 +17,16 @@ export async function createCheckoutSession(priceId: string): Promise<{
 
   const checkoutSession: Stripe.Checkout.Session =
     await stripe.checkout.sessions.create({
-      mode: "subscription",
+      mode: "payment",
       line_items: [
         {
           quantity: 1,
           price: priceId,
         },
       ],
-      success_url: `${origin}${SETTINGS_BILLING_ROUTE_PATH}?session_id={CHECKOUT_SESSION_ID}`,
+      expand: ["line_items"],
+      customer_email: email,
+      success_url: `${origin}${THANK_YOU_ROUTE_PATH}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/${SETTINGS_BILLING_ROUTE_PATH}`,
     });
 
