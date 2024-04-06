@@ -16,8 +16,11 @@ import { appNav, userNav } from "~/constants/navigation";
 import { cn } from "~/utils/cn";
 import { supabase } from "~/server/supabase/supabaseClient";
 import { Button } from "~/components/ui/button";
+import { useAppParams } from "~/hooks/use-app-params";
 
 export const PageLayout = ({ children }: PropsWithChildren) => {
+  const { lang } = useAppParams();
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col">{children}</div>
@@ -26,6 +29,20 @@ export const PageLayout = ({ children }: PropsWithChildren) => {
         color="#5434b7"
         options={{ showSpinner: true }}
         shallowRouting
+        targetPreprocessor={(target) => {
+          const languageCode = "/" + lang;
+          let normalizedPath;
+          if (target.pathname.startsWith(languageCode)) {
+            normalizedPath = target.pathname;
+          } else if (target.pathname === "/") {
+            normalizedPath = languageCode;
+          } else {
+            normalizedPath = `${languageCode}${target.pathname.startsWith("/") ? "" : "/"}${target.pathname}`;
+          }
+          const normalizedURL = new URL(target.href);
+          normalizedURL.pathname = normalizedPath;
+          return normalizedURL;
+        }}
       />
     </>
   );
@@ -45,7 +62,7 @@ PageLayout.Header = () => {
   return (
     <Disclosure
       as="nav"
-      className="sticky border-b border-gray-200 backdrop-blur-sm bg-white/10"
+      className="sticky border-b border-gray-200 bg-white/10 backdrop-blur-sm"
     >
       {({ open }) => (
         <>
