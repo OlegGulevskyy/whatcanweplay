@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { GenerateGameSchema } from "~/components/play/form-schema";
 import { PREMIUM_STATUS } from "~/constants/billing";
+import { env } from "~/env.mjs";
 import { getRateLimiter } from "~/lib/rate-limit";
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 import { posthogClient } from "~/server/posthog";
@@ -111,6 +112,10 @@ export const gameRouter = createTRPCRouter({
   create: privateProcedure
     .input(GenerateGameSchema)
     .use(async ({ ctx, next }) => {
+      if (env.NODE_ENV !== "production") {
+        return next();
+      }
+
       const { user } = ctx;
       if (!user.email) {
         throw new TRPCError({
@@ -131,6 +136,7 @@ export const gameRouter = createTRPCRouter({
             "You are sending too many requests. Please try again later (in 30 seconds).",
         });
       }
+
       return next();
     })
     // Can be later extracted to other routes if required

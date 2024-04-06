@@ -18,6 +18,10 @@ export const discordRouter = createTRPCRouter({
       }),
     )
     .use(async ({ ctx, next }) => {
+      if (env.NODE_ENV !== "production") {
+        return next();
+      }
+
       const { user } = ctx;
       if (!user.email) {
         throw new TRPCError({
@@ -34,7 +38,8 @@ export const discordRouter = createTRPCRouter({
       if (!result.success) {
         throw new TRPCError({
           code: "TOO_MANY_REQUESTS",
-          message: "You are sending too many requests. Please try again later (in 30 seconds).",
+          message:
+            "You are sending too many requests. Please try again later (in 30 seconds).",
         });
       }
       return next();
