@@ -187,7 +187,7 @@ export const HistoryView = () => {
                             )}
                           </Menu.Item>
                           <Menu.Item>
-                            {({ active }) => (
+                            {(_props) => (
                               <button
                                 className={cn(
                                   "block px-3 py-1 text-sm leading-6 text-gray-900",
@@ -204,7 +204,7 @@ export const HistoryView = () => {
                             )}
                           </Menu.Item>
                           <Menu.Item>
-                            {({ active }) => (
+                            {(_props) => (
                               <div className="mt-4 w-full px-2">
                                 <button
                                   className={cn(

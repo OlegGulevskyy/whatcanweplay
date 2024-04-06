@@ -151,7 +151,7 @@ export const BillingView = () => {
               className="inline-flex items-center gap-1 text-indigo-700 underline underline-offset-2"
               target="_blank"
             >
-              me {<TwitterIcon className="h-5 w-5" />}
+              me <TwitterIcon className="h-5 w-5" />
             </a>{" "}
             and my fiancee in our preparation for the wedding and our honeymoon.
             <br />

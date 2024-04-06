@@ -10,14 +10,14 @@ export const GetInTouchBlock = () => {
         className="mt-4 inline-flex w-full gap-2 text-indigo-700 underline underline-offset-4"
         href={TWITTER_URL}
       >
-        {<TwitterIcon />}
+        <TwitterIcon />
         Twitter
       </a>
       <Link
         className="mt-4 inline-flex w-full gap-2 text-indigo-700 underline underline-offset-4"
         href={SEND_MESSAGE_ROUTE_PATH}
       >
-        {<PenIcon />}
+        <PenIcon />
         Contact form
       </Link>
     </>
