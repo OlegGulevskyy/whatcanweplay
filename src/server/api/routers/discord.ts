@@ -26,8 +26,6 @@ export const discordRouter = createTRPCRouter({
         });
       }
 
-      console.log("ip", getIp());
-
       const identifier = getIp() ?? user.email;
       const result = await rateLimiter.limit(identifier);
       ctx.headers.set("X-RateLimit-Limit", `${result.limit}`);
