@@ -20,15 +20,6 @@ import { useAppParams } from "~/hooks/use-app-params";
 
 export const PageLayout = ({ children }: PropsWithChildren) => {
   const { lang } = useAppParams();
-  const handleResize = () => {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
-  };
-
-  if (typeof window !== "undefined") {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-  }
 
   return (
     <>
