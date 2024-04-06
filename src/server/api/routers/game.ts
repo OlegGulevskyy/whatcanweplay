@@ -4,12 +4,15 @@ import { z } from "zod";
 
 import { GenerateGameSchema } from "~/components/play/form-schema";
 import { PREMIUM_STATUS } from "~/constants/billing";
+import { getRateLimiter } from "~/lib/rate-limit";
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 import { posthogClient } from "~/server/posthog";
+import { getIp } from "~/utils/ip";
 import { getOpenAiClient } from "~/utils/openai";
 import { getGenerateGamePrompt } from "~/utils/prompts/generate-game";
 
 const openai = getOpenAiClient();
+const rateLimiter = getRateLimiter({ allowReqs: 1, perSeconds: 30 });
 
 const functionCallingParams = z.object({
   title: z.string().describe("The title of the game"),
@@ -107,6 +110,29 @@ export const gameRouter = createTRPCRouter({
 
   create: privateProcedure
     .input(GenerateGameSchema)
+    .use(async ({ ctx, next }) => {
+      const { user } = ctx;
+      if (!user.email) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You need to be logged in to send messages",
+        });
+      }
+
+      const identifier = getIp() ?? user.email;
+      const result = await rateLimiter.limit(identifier);
+      ctx.headers.set("X-RateLimit-Limit", `${result.limit}`);
+      ctx.headers.set("X-RateLimit-Remaining", `${result.remaining}`);
+
+      if (!result.success) {
+        throw new TRPCError({
+          code: "TOO_MANY_REQUESTS",
+          message:
+            "You are sending too many requests. Please try again later (in 30 seconds).",
+        });
+      }
+      return next();
+    })
     // Can be later extracted to other routes if required
     .use(async ({ ctx, next }) => {
       const { user, db } = ctx;
