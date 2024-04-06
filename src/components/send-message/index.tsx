@@ -17,7 +17,7 @@ import {
 } from "~/components/ui/form";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
-import { sendDiscordMessageServer } from "~/app/actions/discord";
+import { api } from "~/trpc/react";
 
 const FormSchema = z.object({
   loveOrHateMessage: z
@@ -30,6 +30,9 @@ const FormSchema = z.object({
 
 export const SendMessageView = () => {
   const { user } = useUser();
+  const { mutateAsync: sendDiscordMessage, isLoading: isSendingMessage } =
+    api.discord.sendDiscordMessage.useMutation();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -39,9 +42,14 @@ export const SendMessageView = () => {
   });
 
   function onSubmit(formData: z.infer<typeof FormSchema>) {
-    sendDiscordMessageServer({
+    if (!user || !user.email) {
+      toast({ title: "You need to be logged in.", variant: "destructive" });
+      return;
+    }
+
+    sendDiscordMessage({
       message: formData.loveOrHateMessage,
-      user: user?.email,
+      user: user.email,
       channel: "messages",
     })
       .then(() => {
@@ -94,7 +102,11 @@ export const SendMessageView = () => {
                   </FormItem>
                 )}
               />
-              <Button className="text-md w-full" type="submit">
+              <Button
+                className="text-md w-full"
+                type="submit"
+                disabled={isSendingMessage}
+              >
                 Send
               </Button>
             </form>

@@ -24,6 +24,8 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
     DISCORD_WEBHOOK_URL_MESSAGES: z.string().min(1),
     DISCORD_WEBHOOK_URL: z.string().min(1),
+    UPSTASH_REDIS_URL: z.string().min(1),
+    UPSTASH_REDIS_TOKEN: z.string().min(1),
   },
 
   /**
@@ -41,7 +43,6 @@ export const env = createEnv({
     NEXT_PUBLIC_STRIPE_PRICE_ID_LOW: z.string(),
     NEXT_PUBLIC_STRIPE_PRICE_ID_MID: z.string(),
     NEXT_PUBLIC_STRIPE_PRICE_ID_HIGH: z.string(),
-
   },
 
   /**
@@ -72,6 +73,9 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MID,
     NEXT_PUBLIC_STRIPE_PRICE_ID_HIGH:
       process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_HIGH,
+
+    UPSTASH_REDIS_URL: process.env.UPSTASH_REDIS_URL,
+    UPSTASH_REDIS_TOKEN: process.env.UPSTASH_REDIS_TOKEN,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
