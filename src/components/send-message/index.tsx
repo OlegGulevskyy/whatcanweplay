@@ -86,7 +86,7 @@ export const SendMessageView = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-lg">
-                      Your "love or hate" message
+                      Your &apos;love or hate&apos; message
                     </FormLabel>
                     <FormControl>
                       <Textarea

@@ -36,7 +36,7 @@ async function RootLayout({
 
   return (
     <>
-      <html lang={params.lang} dir={dir(params.lang)}>
+      <html lang={params.lang} dir={dir(params.lang)} suppressHydrationWarning>
         <head />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <body
