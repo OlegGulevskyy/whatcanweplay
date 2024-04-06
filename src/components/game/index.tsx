@@ -17,7 +17,7 @@ export const GameDetailsView = (props: GameDetailsViewProps) => {
       </div>
       <div className="mt-6 border-t border-gray-100">
         <dl className="divide-y divide-gray-100">
-          <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div className="py-6 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-0">
             {props.setup && (
               <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="mb-4 text-lg font-medium leading-6 text-gray-900">
@@ -49,7 +49,7 @@ export const GameDetailsView = (props: GameDetailsViewProps) => {
             )}
           </div>
 
-          <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div className="py-6 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-0">
             {props.how_to_play && (
               <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="mb-4 text-lg font-medium leading-6 text-gray-900">
@@ -65,7 +65,7 @@ export const GameDetailsView = (props: GameDetailsViewProps) => {
               </div>
             )}
           </div>
-          <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div className="py-6 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-0">
             {props.how_to_win && (
               <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="mb-4 text-lg font-medium leading-6 text-gray-900">
@@ -82,7 +82,7 @@ export const GameDetailsView = (props: GameDetailsViewProps) => {
             )}
           </div>
 
-          <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div className="py-6 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-0">
             {props.additional_info && (
               <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="mb-4 text-lg font-medium leading-6 text-gray-900">

@@ -1,8 +1,10 @@
 import { Trans } from "react-i18next/TransWithoutContext";
-import { useTranslation } from "../i18n";
-import { getLanguage } from "../i18n/utils/get-language";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import Image from "next/image";
+
+import { useTranslation } from "../i18n";
+import { getLanguage } from "../i18n/utils/get-language";
 import { PLAY_ROUTE_PATH } from "~/constants/navigation";
 import { MainLayout } from "~/layouts/main";
 
@@ -65,6 +67,15 @@ export default async function Home({ params }: PageProps) {
           </p>
         </div>
       </div>
+
+      <Image
+        src="/assets/images/background.jpg"
+        alt="background"
+        width={800}
+        height={800}
+        className="absolute left-0 top-0 h-full w-full object-cover"
+        style={{ zIndex: -1 }}
+      />
     </MainLayout>
   );
 }

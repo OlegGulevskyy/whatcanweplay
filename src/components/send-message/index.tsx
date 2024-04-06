@@ -35,10 +35,6 @@ export const SendMessageView = () => {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      loveOrHateMessage:
-        'Love "What Can We Play", but this could be a killer feature...',
-    },
   });
 
   function onSubmit(formData: z.infer<typeof FormSchema>) {
@@ -75,6 +71,10 @@ export const SendMessageView = () => {
           <p className="mt-4 text-slate-700">
             Super excited you consider to send a message!
           </p>
+
+          <p className="text-slate-700">
+            I read all the messages and reply to each one of them.
+          </p>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -86,19 +86,17 @@ export const SendMessageView = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-lg">
-                      Your love or hate message
+                      Your "love or hate" message
                     </FormLabel>
                     <FormControl>
                       <Textarea
                         className="text-md"
-                        placeholder="John Doe"
+                        placeholder="I love/hate... because..."
                         {...field}
                       />
                     </FormControl>
                     <FormMessage />
-                    <FormDescription>
-                      I read all the messages and reply to each one of them.
-                    </FormDescription>
+                    <FormDescription>* Maximum 300 characters.</FormDescription>
                   </FormItem>
                 )}
               />
