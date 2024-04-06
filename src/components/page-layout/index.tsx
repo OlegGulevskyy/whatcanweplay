@@ -20,6 +20,15 @@ import { useAppParams } from "~/hooks/use-app-params";
 
 export const PageLayout = ({ children }: PropsWithChildren) => {
   const { lang } = useAppParams();
+  const handleResize = () => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  };
+
+  if (typeof window !== "undefined") {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+  }
 
   return (
     <>
@@ -60,13 +69,10 @@ PageLayout.Header = () => {
   };
 
   return (
-    <Disclosure
-      as="nav"
-      className="sticky border-b border-gray-200 bg-white/10 backdrop-blur-sm"
-    >
+    <Disclosure as="nav" className="border-b border-gray-200">
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl bg-white/10 px-4 backdrop-blur-sm sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
               <div className="flex">
                 <div className="flex flex-shrink-0 items-center">

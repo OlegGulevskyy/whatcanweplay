@@ -283,14 +283,14 @@ export function PlayView() {
               )}
             />
           </form>
-          <div className="px-4 mt-4 mb-12">
+        </Form>
+        <PageLayout.Footer>
           <CTAButton
             onCtaClick={submitGeneration}
             isLoading={isGameCreating}
             ctaLabel={isGameCreating ? "Creating your game.." : "Create Game"}
           />
-          </div>
-        </Form>
+        </PageLayout.Footer>
       </PageLayout.Body>
     </PageLayout>
   );
