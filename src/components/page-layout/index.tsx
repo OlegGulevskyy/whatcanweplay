@@ -18,16 +18,6 @@ import { supabase } from "~/server/supabase/supabaseClient";
 import { Button } from "~/components/ui/button";
 
 export const PageLayout = ({ children }: PropsWithChildren) => {
-  const handleResize = () => {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
-  };
-
-  if (typeof window !== "undefined") {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-  }
-
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col">{children}</div>
