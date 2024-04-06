@@ -5,7 +5,7 @@ import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import Image from "next/image";
-import { BellIcon, StarFilledIcon } from "@radix-ui/react-icons";
+import { StarFilledIcon } from "@radix-ui/react-icons";
 import { redirect } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -17,6 +17,7 @@ import { cn } from "~/utils/cn";
 import { supabase } from "~/server/supabase/supabaseClient";
 import { Button } from "~/components/ui/button";
 import { useAppParams } from "~/hooks/use-app-params";
+import { DoorOpenIcon } from "lucide-react";
 
 export const PageLayout = ({ children }: PropsWithChildren) => {
   const { lang } = useAppParams();
@@ -60,10 +61,10 @@ PageLayout.Header = () => {
   };
 
   return (
-    <Disclosure as="nav" className="border-b border-gray-200">
+    <Disclosure as="nav" className="border-b border-gray-200 bg-white/80 backdrop-blur-lg absolute w-full">
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl bg-white/10 px-4 backdrop-blur-sm sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl bg-white px-4 backdrop-blur-sm sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
               <div className="flex">
                 <div className="flex flex-shrink-0 items-center">
@@ -80,25 +81,11 @@ PageLayout.Header = () => {
                 <HeaderDesktop />
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:items-center">
-                {/* Notification button */}
-                {user && (
-                  <button
-                    type="button"
-                    className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    <span className="absolute -inset-1.5" />
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
-                )}
-
-                {/* Profile dropdown */}
                 {user ? (
                   <>
                     <Menu as="div" className="relative ml-3">
                       <div>
-                        <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                          <span className="absolute -inset-1.5" />
+                        <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-white text-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                           <span className="sr-only">Open user menu</span>
                           <Image
                             height={32}
@@ -118,7 +105,7 @@ PageLayout.Header = () => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <Menu.Items className="absolute right-0 z-10 mt-2 w-[200px] origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                           {userNav.map((item) => (
                             <Menu.Item key={item.name}>
                               {({ active }) => (
@@ -126,9 +113,10 @@ PageLayout.Header = () => {
                                   href={item.href}
                                   className={cn(
                                     active ? "bg-gray-100" : "",
-                                    "block px-4 py-2 text-sm text-gray-700",
+                                    "flex flex-row gap-2 items-center px-4 py-2 text-md text-slate-800",
                                   )}
                                 >
+                                  <item.icon className="h-4 w-4" />
                                   {item.name}
                                 </Link>
                               )}
@@ -137,9 +125,10 @@ PageLayout.Header = () => {
                           <Menu.Item>
                             <Link
                               href="#"
-                              className="block px-4 py-2 text-sm text-gray-700"
+                              className="flex flex-row gap-2 items-center px-4 py-2 text-md text-gray-700"
                               onClick={signOut}
                             >
+                              <DoorOpenIcon className="h-4 w-4" />
                               Sign out
                             </Link>
                           </Menu.Item>
@@ -150,7 +139,7 @@ PageLayout.Header = () => {
                 ) : (
                   <div>
                     <Button asChild className="w-full">
-                      <Link href="/login" className="w-full">
+                      <Link href="/login" className="w-full text-md">
                         Login
                       </Link>
                     </Button>
@@ -160,7 +149,6 @@ PageLayout.Header = () => {
               <div className="-mr-2 flex items-center sm:hidden">
                 {/* Mobile menu button */}
                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                  <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
                   {open ? (
                     <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
@@ -194,7 +182,7 @@ PageLayout.Header = () => {
               ))}
             </div>
             {user ? (
-              <div className="border-t border-gray-200 pb-3 pt-4">
+              <div className="pb-3 pt-4">
                 <div className="flex items-center px-4">
                   <div className="flex-shrink-0">
                     <Image
@@ -213,28 +201,22 @@ PageLayout.Header = () => {
                       {user?.email}
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    className="relative ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    <span className="absolute -inset-1.5" />
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
                 </div>
                 <div className="mt-3 space-y-1">
                   {userNav.map((item) => (
                     <Disclosure.Button
                       key={item.name}
-                      className="block w-full px-4 py-2 text-left text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                      className="flex flex-row gap-2 items-center w-full px-4 py-2 text-left text-md font-medium text-slate-800 hover:bg-gray-100 hover:text-gray-800"
                     >
+                      <item.icon className="h-4 w-4" />
                       <Link href={item.href}>{item.name}</Link>
                     </Disclosure.Button>
                   ))}
                   <Disclosure.Button
                     onClick={signOut}
-                    className="block w-full px-4 py-2 text-left text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                    className="flex flex-row gap-2 items-center w-full px-4 py-2 text-left text-md font-medium text-slate-800 hover:bg-gray-100 hover:text-gray-800"
                   >
+                    <DoorOpenIcon className="h-4 w-4" />
                     Sign out
                   </Disclosure.Button>
                 </div>
@@ -254,7 +236,7 @@ PageLayout.Header = () => {
 };
 
 PageLayout.Body = ({ children }: PropsWithChildren) => (
-  <div className="flex-1 overflow-y-auto">
+  <div className="flex-1 overflow-y-auto mt-16">
     <main>
       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">{children}</div>
     </main>

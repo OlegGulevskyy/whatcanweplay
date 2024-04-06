@@ -1,4 +1,5 @@
 import { MagicWandIcon } from "@radix-ui/react-icons";
+import { DollarSignIcon, GamepadIcon, MessageCircleIcon, SettingsIcon } from "lucide-react";
 
 export const SETTINGS_ROUTE_PATH = "/settings";
 export const HISTORY_ROUTE_PATH = "/history";
@@ -32,10 +33,10 @@ export const appNav = [
 ];
 
 export const userNav = [
-  { name: "My games", href: HISTORY_ROUTE_PATH },
-  { name: "Billing", href: SETTINGS_BILLING_ROUTE_PATH },
-  { name: "Settings", href: SETTINGS_GENERAL_ROUTE_PATH },
-  { name: "Send us a message", href: SEND_MESSAGE_ROUTE_PATH },
+  { name: "My games", href: HISTORY_ROUTE_PATH, icon: GamepadIcon },
+  { name: "Billing", href: SETTINGS_BILLING_ROUTE_PATH, icon: DollarSignIcon },
+  { name: "Settings", href: SETTINGS_GENERAL_ROUTE_PATH, icon: SettingsIcon },
+  { name: "Send us a message", href: SEND_MESSAGE_ROUTE_PATH, icon: MessageCircleIcon },
 ];
 
 export const POST_PRODUCT_PATH = "/products/new";
