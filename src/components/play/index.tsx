@@ -26,10 +26,12 @@ import { GenerateGameSchema } from "~/components/play/form-schema";
 import { toast } from "~/components/ui/use-toast";
 import { useUser } from "~/providers/AuthProvider/AuthProvider";
 import {
+  GAME_ROUTE_PATH,
   LOGIN_ROUTE_PATH,
   SETTINGS_BILLING_ROUTE_PATH,
 } from "~/constants/navigation";
 import { useBilling } from "~/hooks/use-billing";
+import { useAppParams } from "~/hooks/use-app-params";
 
 const CTAButton = ({
   isLoading,
@@ -100,6 +102,7 @@ export function PlayView() {
 
   const { mutateAsync: createGame, isLoading: isGameCreating } =
     api.game.create.useMutation();
+  const { lang } = useAppParams();
 
   const router = useRouter();
 
@@ -107,9 +110,21 @@ export function PlayView() {
 
   function submitGeneration() {
     const values = form.getValues();
+
     createGame(values)
       .then((res) => {
-        router.push(`/game/${res.id}`);
+        const url = new URL(
+          window.location.protocol +
+            "//" +
+            window.location.host +
+            "/" +
+            lang +
+            GAME_ROUTE_PATH +
+            "/" +
+            res.id,
+        );
+        url.searchParams.set("outoftheoven", "true")
+        router.push(url.toString());
       })
       .catch((err) => {
         toast({

@@ -1,10 +1,8 @@
-import { type Database } from "~/server/supabase/supabaseTypes";
-
-type GameDetailsViewProps = Database["public"]["Tables"]["games"]["Row"];
+import { TGame } from "~/types/db.types";
 
 const lines = (text: string) => text.split("\n");
 
-export const GameDetailsView = (props: GameDetailsViewProps) => {
+export const GameDetailsView = (props: TGame) => {
   return (
     <div className="p-4">
       <div>
