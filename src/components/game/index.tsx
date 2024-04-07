@@ -1,4 +1,4 @@
-import { TGame } from "~/types/db.types";
+import { type TGame } from "~/types/db.types";
 
 const lines = (text: string) => text.split("\n");
 
