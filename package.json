@@ -16,6 +16,7 @@
     "db:push": "npx supabase db push",
     "translations:pull": "i18nexus pull -p ./src/app/i18n/locales",
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks",
+    "phone:expose": "npx localview --port 3000",
     "fmt": "prettier --write ."
   },
   "dependencies": {

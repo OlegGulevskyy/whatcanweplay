@@ -123,7 +123,7 @@ export function PlayView() {
             "/" +
             res.id,
         );
-        url.searchParams.set("outoftheoven", "true")
+        url.searchParams.set("outoftheoven", "true");
         router.push(url.toString());
       })
       .catch((err) => {
@@ -299,14 +299,14 @@ export function PlayView() {
             />
           </form>
         </Form>
-        <PageLayout.Footer>
-          <CTAButton
-            onCtaClick={submitGeneration}
-            isLoading={isGameCreating}
-            ctaLabel={isGameCreating ? "Creating your game.." : "Create Game"}
-          />
-        </PageLayout.Footer>
       </PageLayout.Body>
+      <PageLayout.Footer>
+        <CTAButton
+          onCtaClick={submitGeneration}
+          isLoading={isGameCreating}
+          ctaLabel={isGameCreating ? "Creating your game.." : "Create Game"}
+        />
+      </PageLayout.Footer>
     </PageLayout>
   );
 }

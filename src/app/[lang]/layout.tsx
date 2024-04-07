@@ -41,7 +41,7 @@ async function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <body
           className={cn(
-            "flex flex-col bg-background font-sans antialiased",
+            "flex flex-col bg-background font-sans antialiased overflow-y-hidden",
             font.className,
             st.global,
           )}

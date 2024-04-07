@@ -18,9 +18,15 @@ import { supabase } from "~/server/supabase/supabaseClient";
 import { Button } from "~/components/ui/button";
 import { useAppParams } from "~/hooks/use-app-params";
 import { DoorOpenIcon } from "lucide-react";
+import { handleResize } from "~/utils/ui";
 
 export const PageLayout = ({ children }: PropsWithChildren) => {
   const { lang } = useAppParams();
+
+  if (typeof window !== "undefined") {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+  }
 
   return (
     <>
@@ -61,7 +67,10 @@ PageLayout.Header = () => {
   };
 
   return (
-    <Disclosure as="nav" className="border-b border-gray-200 bg-white/80 backdrop-blur-lg absolute w-full">
+    <Disclosure
+      as="nav"
+      className="absolute w-full border-b border-gray-200 bg-white/80 backdrop-blur-lg"
+    >
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl bg-white px-4 backdrop-blur-sm sm:px-6 lg:px-8">
@@ -85,7 +94,7 @@ PageLayout.Header = () => {
                   <>
                     <Menu as="div" className="relative ml-3">
                       <div>
-                        <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-white text-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        <Menu.Button className="text-md relative flex max-w-xs items-center rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                           <span className="sr-only">Open user menu</span>
                           <Image
                             height={32}
@@ -113,7 +122,7 @@ PageLayout.Header = () => {
                                   href={item.href}
                                   className={cn(
                                     active ? "bg-gray-100" : "",
-                                    "flex flex-row gap-2 items-center px-4 py-2 text-md text-slate-800",
+                                    "text-md flex flex-row items-center gap-2 px-4 py-2 text-slate-800",
                                   )}
                                 >
                                   <item.icon className="h-4 w-4" />
@@ -125,7 +134,7 @@ PageLayout.Header = () => {
                           <Menu.Item>
                             <Link
                               href="#"
-                              className="flex flex-row gap-2 items-center px-4 py-2 text-md text-gray-700"
+                              className="text-md flex flex-row items-center gap-2 px-4 py-2 text-gray-700"
                               onClick={signOut}
                             >
                               <DoorOpenIcon className="h-4 w-4" />
@@ -139,7 +148,7 @@ PageLayout.Header = () => {
                 ) : (
                   <div>
                     <Button asChild className="w-full">
-                      <Link href="/login" className="w-full text-md">
+                      <Link href="/login" className="text-md w-full">
                         Login
                       </Link>
                     </Button>
@@ -206,7 +215,7 @@ PageLayout.Header = () => {
                   {userNav.map((item) => (
                     <Disclosure.Button
                       key={item.name}
-                      className="flex flex-row gap-2 items-center w-full px-4 py-2 text-left text-md font-medium text-slate-800 hover:bg-gray-100 hover:text-gray-800"
+                      className="text-md flex w-full flex-row items-center gap-2 px-4 py-2 text-left font-medium text-slate-800 hover:bg-gray-100 hover:text-gray-800"
                     >
                       <item.icon className="h-4 w-4" />
                       <Link href={item.href}>{item.name}</Link>
@@ -214,7 +223,7 @@ PageLayout.Header = () => {
                   ))}
                   <Disclosure.Button
                     onClick={signOut}
-                    className="flex flex-row gap-2 items-center w-full px-4 py-2 text-left text-md font-medium text-slate-800 hover:bg-gray-100 hover:text-gray-800"
+                    className="text-md flex w-full flex-row items-center gap-2 px-4 py-2 text-left font-medium text-slate-800 hover:bg-gray-100 hover:text-gray-800"
                   >
                     <DoorOpenIcon className="h-4 w-4" />
                     Sign out
@@ -236,7 +245,7 @@ PageLayout.Header = () => {
 };
 
 PageLayout.Body = ({ children }: PropsWithChildren) => (
-  <div className="flex-1 overflow-y-auto mt-16">
+  <div className="mt-16 flex-1 overflow-y-auto">
     <main>
       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">{children}</div>
     </main>
@@ -244,7 +253,7 @@ PageLayout.Body = ({ children }: PropsWithChildren) => (
 );
 
 PageLayout.Footer = ({ children }: PropsWithChildren) => (
-  <footer className="w-full border-t border-gray-200 bg-white">
+  <footer className="sticky w-full border-t border-gray-200 bg-white">
     <div className="mx-auto max-w-7xl px-4 pb-4 sm:px-6 lg:px-8">
       <div className="flex h-16 items-center">
         <div className="flex w-full flex-row justify-between gap-2">

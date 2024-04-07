@@ -19,6 +19,7 @@ export const LoginView = ({ referer }: { referer: string | null }) => {
   return (
     <PageLayout>
       <PageLayout.Header />
+      <PageLayout.Body>
       <section className="flex h-full flex-col gap-8">
         <div className="flex flex-col gap-2">
           <h1 className="mt-10 text-center text-3xl font-bold leading-tight tracking-tight text-gray-900">
@@ -42,6 +43,7 @@ export const LoginView = ({ referer }: { referer: string | null }) => {
           </Button>
         </div>
       </section>
+      </PageLayout.Body>
     </PageLayout>
   );
 };
