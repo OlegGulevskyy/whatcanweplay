@@ -76,7 +76,7 @@ export async function POST(req: Request) {
             .update({ is_premium: true })
             .eq("email", data.customer_email);
 
-          postDiscordMessage({
+          await postDiscordMessage({
             message: `Payment received - ${foundPack.price}!`,
             user: data.customer_email,
           });
