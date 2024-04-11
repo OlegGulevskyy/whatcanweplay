@@ -1,14 +1,18 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { type z } from "zod";
-import Image from "next/image";
+import { readLocalStorageValue } from "@mantine/hooks";
 import { MagicWandIcon, ReloadIcon } from "@radix-ui/react-icons";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { type z } from "zod";
 
-import { api } from "~/trpc/react";
+import { useEffect } from "react";
+import { LocationComboBox } from "~/components/location-combo-box";
+import { PageLayout } from "~/components/page-layout";
+import { GenerateGameSchema } from "~/components/play/form-schema";
 import { Button } from "~/components/ui/button";
 import {
   Form,
@@ -20,18 +24,32 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { PageLayout } from "~/components/page-layout";
-import { LocationComboBox } from "~/components/location-combo-box";
-import { GenerateGameSchema } from "~/components/play/form-schema";
 import { toast } from "~/components/ui/use-toast";
-import { useUser } from "~/providers/AuthProvider/AuthProvider";
 import {
   GAME_ROUTE_PATH,
   LOGIN_ROUTE_PATH,
   SETTINGS_BILLING_ROUTE_PATH,
 } from "~/constants/navigation";
-import { useBilling } from "~/hooks/use-billing";
 import { useAppParams } from "~/hooks/use-app-params";
+import { useBilling } from "~/hooks/use-billing";
+import { useUser } from "~/providers/AuthProvider/AuthProvider";
+import { api } from "~/trpc/react";
+
+const getGameRedirectUrl = (id: string, lang: string) => {
+  const url = new URL(
+    window.location.protocol +
+      "//" +
+      window.location.host +
+      "/" +
+      lang +
+      GAME_ROUTE_PATH +
+      "/" +
+      id,
+  );
+  // Query param for Posthog to pick up on newly generated games
+  url.searchParams.set("outoftheoven", "true");
+  return url;
+};
 
 const CTAButton = ({
   isLoading,
@@ -89,15 +107,23 @@ const CTAButton = ({
   );
 };
 
+const PlayViewFormDefaultValues = {
+  location: "bar",
+  amountOfPlayers: 2,
+  duration: 30,
+  minimumAge: 18,
+};
+const DEFAULT_VALUES_KEY = "whatcanweplay-form-backup-values";
+
 export function PlayView() {
+  const backupValues = readLocalStorageValue({
+    key: DEFAULT_VALUES_KEY,
+    defaultValue: PlayViewFormDefaultValues,
+  });
+
   const form = useForm<z.infer<typeof GenerateGameSchema>>({
     resolver: zodResolver(GenerateGameSchema),
-    defaultValues: {
-      location: "bar",
-      amountOfPlayers: 2,
-      duration: 30,
-      minimumAge: 18,
-    },
+    defaultValues: backupValues,
   });
 
   const { mutateAsync: createGame, isLoading: isGameCreating } =
@@ -108,22 +134,19 @@ export function PlayView() {
 
   const allFieldsDisabled = isGameCreating;
 
+  const formValues = form.watch();
+
+  useEffect(() => {
+    localStorage.setItem(DEFAULT_VALUES_KEY, JSON.stringify(formValues));
+  }, [formValues]);
+
   function submitGeneration() {
     const values = form.getValues();
 
     createGame(values)
       .then((res) => {
-        const url = new URL(
-          window.location.protocol +
-            "//" +
-            window.location.host +
-            "/" +
-            lang +
-            GAME_ROUTE_PATH +
-            "/" +
-            res.id,
-        );
-        url.searchParams.set("outoftheoven", "true");
+        const url = getGameRedirectUrl(res.id, lang);
+        localStorage.removeItem(DEFAULT_VALUES_KEY);
         router.push(url.toString());
       })
       .catch((err) => {
