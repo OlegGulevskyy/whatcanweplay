@@ -84,7 +84,7 @@ PageLayout.Header = () => {
                     className="hidden h-8 w-auto flex-row items-center gap-2 lg:flex"
                     href="/"
                   >
-                    <StarFilledIcon className="h-8 w-auto" />
+                    <StarFilledIcon className="h-10 p-2 rounded-md w-auto bg-gradient-to-r from-indigo-500/20 via-purple-500/10 to-pink-500/20 text-indigo-600" />
                   </Link>
                 </div>
                 <HeaderDesktop />
