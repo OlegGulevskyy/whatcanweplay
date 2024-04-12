@@ -4,7 +4,7 @@ import { PageLayout } from "~/components/page-layout";
 import { GetInTouchBlock } from "../get-in-touch";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
-import { PLAY_ROUTE_PATH } from "~/constants/navigation";
+import { GENERATE_GAME_ROUTE_PATH } from "~/constants/navigation";
 
 export const ThankYouView = () => {
   return (
@@ -27,7 +27,7 @@ export const ThankYouView = () => {
         </div>
       </PageLayout.Body>
       <PageLayout.Footer>
-        <Link href={PLAY_ROUTE_PATH} className="w-full">
+        <Link href={GENERATE_GAME_ROUTE_PATH} className="w-full">
           <Button className="text-md w-full">🚀 Start generating games</Button>
         </Link>
       </PageLayout.Footer>

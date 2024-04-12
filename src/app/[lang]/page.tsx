@@ -5,7 +5,7 @@ import Image from "next/image";
 
 import { useTranslation } from "../i18n";
 import { getLanguage } from "../i18n/utils/get-language";
-import { PLAY_ROUTE_PATH } from "~/constants/navigation";
+import { GENERATE_GAME_ROUTE_PATH } from "~/constants/navigation";
 import { MainLayout } from "~/layouts/main";
 
 export const metadata = {
@@ -47,7 +47,7 @@ export default async function Home({ params }: PageProps) {
             </Trans>
           </div>
         ))}
-        <Link href={PLAY_ROUTE_PATH}>
+        <Link href={GENERATE_GAME_ROUTE_PATH}>
           <button
             type="button"
             className="inline-flex w-full items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-lg font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

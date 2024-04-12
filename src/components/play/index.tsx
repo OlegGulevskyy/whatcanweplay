@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { readLocalStorageValue } from "@mantine/hooks";
 import { MagicWandIcon, ReloadIcon } from "@radix-ui/react-icons";
@@ -9,7 +10,6 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 
-import { useEffect } from "react";
 import { LocationComboBox } from "~/components/location-combo-box";
 import { PageLayout } from "~/components/page-layout";
 import { GenerateGameSchema } from "~/components/play/form-schema";
@@ -115,7 +115,7 @@ const PlayViewFormDefaultValues = {
 };
 const DEFAULT_VALUES_KEY = "whatcanweplay-form-backup-values";
 
-export function PlayView() {
+export function GenerateGameView() {
   const backupValues = readLocalStorageValue({
     key: DEFAULT_VALUES_KEY,
     defaultValue: PlayViewFormDefaultValues,

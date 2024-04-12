@@ -4,7 +4,7 @@ import { DollarSignIcon, GamepadIcon, MessageCircleIcon, SettingsIcon } from "lu
 export const SETTINGS_ROUTE_PATH = "/settings";
 export const HISTORY_ROUTE_PATH = "/history";
 export const SEND_MESSAGE_ROUTE_PATH = "/send-message";
-export const PLAY_ROUTE_PATH = "/play";
+export const GENERATE_GAME_ROUTE_PATH = "/generate";
 export const LOGIN_ROUTE_PATH = "/login";
 
 export const THANK_YOU_ROUTE_PATH = "/thank-you";
@@ -26,8 +26,8 @@ export const settingsNav = [
 
 export const appNav = [
   {
-    name: "Play",
-    href: PLAY_ROUTE_PATH,
+    name: "Generate game",
+    href: GENERATE_GAME_ROUTE_PATH,
     icon: MagicWandIcon,
   },
 ];

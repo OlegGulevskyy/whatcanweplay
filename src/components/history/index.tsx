@@ -8,7 +8,7 @@ import Link from "next/link";
 
 import { cn } from "~/utils/cn";
 import { PageLayout } from "../page-layout";
-import { PLAY_ROUTE_PATH, getGameRoutePath } from "~/constants/navigation";
+import { GENERATE_GAME_ROUTE_PATH, getGameRoutePath } from "~/constants/navigation";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import { LoadingScreen } from "../Loading";
@@ -27,7 +27,7 @@ const EmptyGamesHistory = () => {
       <p className="text-center text-lg text-gray-500">
         You have no games yet.
       </p>
-      <Link href={PLAY_ROUTE_PATH} className="w-full">
+      <Link href={GENERATE_GAME_ROUTE_PATH} className="w-full">
         <Button className="w-full text-lg">🚀 Generate a game</Button>
       </Link>
     </div>

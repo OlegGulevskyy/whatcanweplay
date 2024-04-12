@@ -189,6 +189,7 @@ export const gameRouter = createTRPCRouter({
       const newCredits = currentCredits - 1;
 
       console.log("Start generating game");
+      console.log("Prompt: ", prompt);
 
       await experimental_generateText({
         model: openai.chat("gpt-4-turbo"),
