@@ -1,103 +1,76 @@
+"use client";
+
+import { api } from "~/trpc/react";
 import { type TGame } from "~/types/db.types";
+import { LoadingScreen } from "~/components/Loading";
+import { clientSupabase } from "~/server/supabase/supabaseClient";
+import { useEffect, useRef } from "react";
+import { type RealtimeChannel } from "@supabase/supabase-js";
+import { LoadedGame } from "./loaded-game";
 
-const lines = (text: string) => text.split("\n");
+export const GameDetailsView = (props: Pick<TGame, "id">) => {
+  const {
+    data: gameData,
+    isLoading: isGameLoading,
+    refetch,
+  } = api.game.getGameById.useQuery({ id: props.id });
 
-export const GameDetailsView = (props: TGame) => {
-  return (
-    <div className="p-4">
+  const channel = useRef<RealtimeChannel | null>(null);
+
+  const handleGameUpdate = async (payload: unknown) => {
+    refetch();
+  };
+
+  const subscribeToGameUpdates = async () => {
+    channel.current = clientSupabase
+      .channel("games-updates")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "games" },
+        (payload) => {
+          refetch();
+        },
+      )
+      .subscribe();
+
+    console.log("%cSubscribed to game updates", "color: green");
+    console.log("Subscriber: ", channel.current);
+  };
+
+  useEffect(() => {
+    subscribeToGameUpdates();
+    return () => {
+      channel.current?.unsubscribe();
+    };
+  }, []);
+
+  if (isGameLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (!gameData) {
+    return <div>Game not found</div>;
+  }
+
+  if (gameData?.gen_status === "pending") {
+    return (
+      <div className="mt-20">
+        <div>We are working on generating your game...</div>
+        <div>Please wait</div>
+      </div>
+    );
+  }
+
+  if (gameData?.gen_status === "success") {
+    return <LoadedGame {...gameData} />;
+  }
+
+  if (gameData?.gen_status === "failure") {
+    return (
       <div>
-        <h3 className="mb-4 mt-4 text-xl font-semibold leading-7 text-gray-900">
-          {props.title}
-        </h3>
-        <p className="text-md mt-1 max-w-2xl leading-6 text-gray-500">
-          {props.purpose}
-        </p>
+        <p>Something went wrong while generating your game</p>
+        <p>Please try again later</p>
       </div>
-      <div className="mt-6 border-t border-gray-100">
-        <dl className="divide-y divide-gray-100">
-          <div className="py-6 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-0">
-            {props.setup && (
-              <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="mb-4 text-lg font-medium leading-6 text-gray-900">
-                  🌈 Setup
-                </dt>
-                <dd className="text-md mt-1 leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  <ul className="flex flex-col gap-4 px-6 list-disc">
-                    {props.setup.map((line, i) => (
-                      <li key={i}>{line}</li>
-                    ))}
-                  </ul>
-                </dd>
-              </div>
-            )}
-
-            {props.rules && (
-              <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="mb-4 text-lg font-medium leading-6 text-gray-900">
-                  📏 Rules
-                </dt>
-                <dd className="text-md mt-1 leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  <ol className="flex list-decimal flex-col gap-4 px-6">
-                    {props.rules.map((line, i) => (
-                      <li key={i}>{line}</li>
-                    ))}
-                  </ol>
-                </dd>
-              </div>
-            )}
-          </div>
-
-          <div className="py-6 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-0">
-            {props.how_to_play && (
-              <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="mb-4 text-lg font-medium leading-6 text-gray-900">
-                  🎳 How to play?
-                </dt>
-                <dd className="text-md mt-1 leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  <ul className="flex flex-col gap-4 px-2">
-                    {lines(props.how_to_play).map((line, i) => (
-                      <li key={i}>{line}</li>
-                    ))}
-                  </ul>
-                </dd>
-              </div>
-            )}
-          </div>
-          <div className="py-6 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-0">
-            {props.how_to_win && (
-              <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="mb-4 text-lg font-medium leading-6 text-gray-900">
-                  🎯 How to win?
-                </dt>
-                <dd className="text-md mt-1 leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  <ul className="flex flex-col gap-4">
-                    {lines(props.how_to_win).map((line, i) => (
-                      <li key={i}>{line}</li>
-                    ))}
-                  </ul>
-                </dd>
-              </div>
-            )}
-          </div>
-
-          <div className="py-6 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-0">
-            {props.additional_info && (
-              <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="mb-4 text-lg font-medium leading-6 text-gray-900">
-                  💁 Additional information
-                </dt>
-                <dd className="text-md mt-1 leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  <ul className="flex flex-col gap-4">
-                    {lines(props.additional_info).map((line, i) => (
-                      <li key={i}>{line}</li>
-                    ))}
-                  </ul>
-                </dd>
-              </div>
-            )}
-          </div>
-        </dl>
-      </div>
-    </div>
-  );
+    );
+  }
 };

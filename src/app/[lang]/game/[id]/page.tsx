@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { GameDetailsView } from "~/components/game";
 
 import { LOGIN_ROUTE_PATH } from "~/constants/navigation";
-import { api } from "~/trpc/server";
 import { getServerUser } from "~/utils/auth";
 
 export const metadata = {
@@ -19,9 +18,7 @@ const GamePage = async ({ params }: { params: { id: string } }) => {
     return redirect(LOGIN_ROUTE_PATH);
   }
 
-  const gameDataDb = await api.game.getGameById.query({ id: params.id });
-
-  return <GameDetailsView {...gameDataDb} />;
+  return <GameDetailsView id={params.id} />;
 };
 
 export default GamePage;

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { GenerateGameSchema } from "~/components/play/form-schema";
 import { PREMIUM_STATUS } from "~/constants/billing";
 import { env } from "~/env.mjs";
+import EncoreClient, { Environment, Local } from "~/lib/backend-client";
 import { getRateLimiter } from "~/lib/rate-limit";
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 import { posthogClient } from "~/server/posthog";
@@ -14,6 +15,10 @@ import { getGenerateGamePrompt } from "~/utils/prompts/generate-game";
 
 const openai = getOpenAiClient();
 const rateLimiter = getRateLimiter({ allowReqs: 1, perSeconds: 30 });
+
+const backendClientEnv =
+  env.NODE_ENV === "development" ? Local : Environment("staging");
+const backendClient = new EncoreClient(backendClientEnv);
 
 const functionCallingParams = z.object({
   title: z.string().describe("The title of the game"),
@@ -177,102 +182,117 @@ export const gameRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { user, db } = ctx;
       const prompt = getGenerateGamePrompt(input);
-      let gameId = "";
-
-      const { data: billingData } = await db
-        .from("profiles")
-        .select("credits_available, subscription_status")
-        .eq("id", user.id)
+      const newGame = await db
+        .from("games")
+        .insert({
+          created_by: user.id,
+        })
+        .select("id")
         .single();
 
-      const currentCredits = billingData?.credits_available || 0;
-      const newCredits = currentCredits - 1;
+      if (newGame.error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Error creating a game",
+        });
+      }
 
-      console.log("Start generating game");
-      console.log("Prompt: ", prompt);
+      try {
+        await backendClient.games.Generate({
+          userId: user.id,
+          gamePrompt: prompt,
+          gameId: newGame.data.id,
+        });
+      } catch (e) {
+        console.log("Error generating game:", e);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Error generating a game (encore)",
+        });
+      }
 
-      await experimental_generateText({
-        model: openai.chat("gpt-4-turbo"),
-        tools: {
-          game: {
-            description:
-              "Generate a fun, innovative game for a group of people.",
-            parameters: functionCallingParams,
-            execute: async (data: z.infer<typeof functionCallingParams>) => {
-              const gameSaveResult = await db
-                .from("games")
-                .insert({
-                  created_by: user.id,
-                  title: data.title,
-                  purpose: data.purpose,
-                  how_to_win: data.howToWin,
-                  how_to_play: data.howToPlay,
-                  setup: data.setup,
-                  rules: data.rules,
-                  additional_info: data.additionalInfo,
-                  is_published: true,
-                  location: input.location,
-                })
-                .select("id")
-                .single();
+      // await experimental_generateText({
+      //   model: openai.chat("gpt-4-turbo"),
+      //   tools: {
+      //     game: {
+      //       description:
+      //         "Generate a fun, innovative game for a group of people.",
+      //       parameters: functionCallingParams,
+      //       execute: async (data: z.infer<typeof functionCallingParams>) => {
+      //         const gameSaveResult = await db
+      //           .from("games")
+      //           .insert({
+      //             created_by: user.id,
+      //             title: data.title,
+      //             purpose: data.purpose,
+      //             how_to_win: data.howToWin,
+      //             how_to_play: data.howToPlay,
+      //             setup: data.setup,
+      //             rules: data.rules,
+      //             additional_info: data.additionalInfo,
+      //             is_published: true,
+      //             location: input.location,
+      //           })
+      //           .select("id")
+      //           .single();
 
-              await db.rpc("decrementby", {
-                x: 1,
-                user_email: user.email!,
-              });
+      //         await db.rpc("decrementby", {
+      //           x: 1,
+      //           user_email: user.email!,
+      //         });
 
-              if (gameSaveResult.error) {
-                posthogClient.capture({
-                  distinctId: ctx.user.id,
-                  event: "game_gen_failed",
-                  properties: {
-                    error: {
-                      ...gameSaveResult.error,
-                    },
-                    email: ctx.user.email,
-                  },
-                });
-                throw new Error("Failed to create a game");
-              }
+      //         if (gameSaveResult.error) {
+      //           posthogClient.capture({
+      //             distinctId: ctx.user.id,
+      //             event: "game_gen_failed",
+      //             properties: {
+      //               error: {
+      //                 ...gameSaveResult.error,
+      //               },
+      //               email: ctx.user.email,
+      //             },
+      //           });
+      //           throw new Error("Failed to create a game");
+      //         }
 
-              posthogClient.capture({
-                distinctId: ctx.user.id,
-                event: "game_gen_succeeded",
-                properties: {
-                  game_id: gameSaveResult.data.id,
-                  email: ctx.user.email,
-                  remaining_credits: newCredits,
-                },
-              });
+      //         posthogClient.capture({
+      //           distinctId: ctx.user.id,
+      //           event: "game_gen_succeeded",
+      //           properties: {
+      //             game_id: gameSaveResult.data.id,
+      //             email: ctx.user.email,
+      //             remaining_credits: newCredits,
+      //           },
+      //         });
 
-              gameId = gameSaveResult.data.id;
+      //         gameId = gameSaveResult.data.id;
 
-              await db.from("prompts").insert({
-                game: gameSaveResult.data.id,
-                amount_of_players: input.amountOfPlayers,
-                duration: input.duration,
-                location: input.location,
-                minimum_age: input.minimumAge,
-                custom_instructions: input.customInstructions,
-                props: input.props,
-              });
-              posthogClient.capture({
-                distinctId: ctx.user.id,
-                event: "prompt_saved",
-                properties: {
-                  game_id: gameSaveResult.data.id,
-                  email: ctx.user.email,
-                },
-              });
+      //         await db.from("prompts").insert({
+      //           game: gameSaveResult.data.id,
+      //           amount_of_players: input.amountOfPlayers,
+      //           duration: input.duration,
+      //           location: input.location,
+      //           minimum_age: input.minimumAge,
+      //           custom_instructions: input.customInstructions,
+      //           props: input.props,
+      //         });
+      //         posthogClient.capture({
+      //           distinctId: ctx.user.id,
+      //           event: "prompt_saved",
+      //           properties: {
+      //             game_id: gameSaveResult.data.id,
+      //             email: ctx.user.email,
+      //           },
+      //         });
 
-              return { id: gameSaveResult.data.id };
-            },
-          },
-        },
-        prompt,
-      });
+      //         return { id: gameSaveResult.data.id };
+      //       },
+      //     },
+      //   },
+      //   prompt,
+      // });
 
-      return { id: gameId };
+      return { id: newGame.data.id };
     }),
 
   deleteById: privateProcedure

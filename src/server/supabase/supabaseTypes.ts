@@ -39,6 +39,7 @@ export interface Database {
           additional_info: string | null
           created_at: string | null
           created_by: string | null
+          gen_status: Database["public"]["Enums"]["status_enum"]
           how_to_play: string | null
           how_to_win: string | null
           id: string
@@ -55,6 +56,7 @@ export interface Database {
           additional_info?: string | null
           created_at?: string | null
           created_by?: string | null
+          gen_status?: Database["public"]["Enums"]["status_enum"]
           how_to_play?: string | null
           how_to_win?: string | null
           id?: string
@@ -71,6 +73,7 @@ export interface Database {
           additional_info?: string | null
           created_at?: string | null
           created_by?: string | null
+          gen_status?: Database["public"]["Enums"]["status_enum"]
           how_to_play?: string | null
           how_to_win?: string | null
           id?: string
@@ -187,7 +190,7 @@ export interface Database {
       }
     }
     Enums: {
-      [_ in never]: never
+      status_enum: "pending" | "success" | "failure"
     }
     CompositeTypes: {
       [_ in never]: never

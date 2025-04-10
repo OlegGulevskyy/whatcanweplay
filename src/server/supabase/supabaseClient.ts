@@ -19,6 +19,15 @@ export const getServiceSupabase = () =>
 export const clientSupabase = createClient<Database>(
   env.NEXT_PUBLIC_SUPABASE_URL,
   env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  {
+    realtime: {
+      log_level: "debug",
+      logger: (msg: string, ...rest) => {
+        console.log("%c[logger]", "color: blue", msg);
+        console.log(...rest);
+      },
+    },
+  },
 );
 
 export const supabase = () =>
